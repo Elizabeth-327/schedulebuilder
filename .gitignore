@@ -1,0 +1,12 @@
+dist
+build
+exclude
+
+.vscode
+node_modules
+.idea
+
+.DS_Store
+
+# to enable local gitignore changes
+.gitignore
