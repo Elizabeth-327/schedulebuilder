@@ -1,4 +1,23 @@
-import Image from "next/image";
+"use client";
+
+import { useRouter } from "next/navigation";
+
+export default function Home() {
+  const router = useRouter();
+  return (
+    <div className="flex flex-col items-center justify-center h-screen p-4">
+      <h1 className="text-3xl font-bold mb-6">KU Schedule Planner</h1>
+      <button
+        className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+        onClick={() => router.push("/schedule")}
+      >
+        Build Schedule
+      </button>
+
+    </div>
+  )
+}
+/*import Image from "next/image";
 
 export default function Home() {
   return (
@@ -63,3 +82,4 @@ export default function Home() {
     </div>
   );
 }
+*/
