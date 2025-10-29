@@ -15,6 +15,8 @@ type ScheduledCourse = {
     classNumber: string;
     times: { day: string; start: number; end: number}[];
     conflict: boolean;
+    type?: "LEC" | "LAB" | "DIS";
+    color?: string;
 };
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -49,6 +51,15 @@ const getCourseColor = (code: string) => {
     return courseColors[index];
 };
 
+const assignColorsToSchedule = (schedule: ScheduledCourse[]) => {
+    let colorIndex = 0;
+    schedule.forEach((sc) => {
+        sc.color = courseColors[colorIndex % courseColors.length];
+        colorIndex++;
+    });
+    return schedule;
+}
+
 export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSemester, currentSemesterPlan }: WeeklyScheduleGridProps) {
     const [scheduleOptions, setScheduleOptions] = useState<ScheduledCourse[][]>([]);
     const [selectedScheduleIndex, setSelectedScheduleIndex] = useState(0);
@@ -70,14 +81,17 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
         return h + minutes / 60;
     };
     
-    const parseCourseTimes = (course: Course, offering: any): ScheduledCourse => {
+    const parseCourseTimes = (course: Course, offering: Section): ScheduledCourse => {
         const allTimes: { day: string; start: number; end: number }[] = [];
+        
+        /*
         const sections = [
         ...(offering.times ? [offering] : []),
         ...(course.labSections || []),
         ...(course.discussionSections || []),
         ];
-
+        */
+        const sections = offering.times ? [offering] : []; // only parses 
         sections.forEach((section) => {
             const dayTimes = section.times.split(","); // e.g., ["MWF 10:00 AM - 10:50 AM"]
             dayTimes.forEach((dt: string) => {
@@ -111,7 +125,23 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
     });
     return { code: course.code, classNumber: offering.classNumber, times: allTimes, conflict: false };
 };
+    // Function to generate all combinations of lecture + lab + discussion
+    const getSectionCombinations = (course: Course) => {
+        const lectures = course.offerings; // array of Sections
+        const labs = course.labSections || [null]; // array of Sections or array with one null element
+        const discussions = course.discussionSections || [null];
 
+        const combinations: any[] = []; // typed as any[] because i'm lazy and tired of typescript
+        lectures.forEach((lec) => {
+            labs.forEach((lab) => {
+                discussions.forEach((dis) => {
+                    combinations.push({lec, lab, dis});
+                })
+            })
+        });
+
+        return combinations;
+    }
     // Generate all possible schedules
     useEffect(() => {
         const courseCodes = schedules[currentSemester][currentSemesterPlan];
@@ -124,7 +154,35 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
         }
 
         // Generate all combinations recursively
+        // result = array of schedules that the student could take given an array of Courses (so it is an array of array of Courses)
         const combineSchedules = (courses: Course[], index = 0, current: ScheduledCourse[] = [], result: ScheduledCourse[][] = []) => {
+            if (index === courses.length) {
+                result.push([...current]);
+                return;
+            }
+
+            const course = courses[index];
+            const combinations = getSectionCombinations(course); // array of {lec: Section, lab: Section, dis: Section}s
+
+            // outer recursion -> moves through courses
+            // inner forEach loop -> iterates through section combinations of current course
+            combinations.forEach((combo) => {
+                const scheduledLecture = {...parseCourseTimes(course, combo.lec), type: "LEC" as const};
+                const scheduledLab = combo.lab ? {...parseCourseTimes(course, combo.lab), type: "LAB" as const} : null;
+                const scheduledDiscussion = combo.dis ? {...parseCourseTimes(course, combo.dis), type: "DIS" as const} : null;
+                
+                current.push(scheduledLecture);
+                if (scheduledLab) current.push(scheduledLab);
+                if (scheduledDiscussion) current.push(scheduledDiscussion);
+
+                combineSchedules(courses, index + 1, current, result);
+                current.pop();
+                if (scheduledLab) current.pop();
+                if (scheduledDiscussion) current.pop();
+            });
+        };
+        // Old version
+        /*const OldcombineSchedules = (courses: Course[], index = 0, current: ScheduledCourse[] = [], result: ScheduledCourse[][] = []) => {
             if (index === courses.length) {
                 result.push([...current]);
                 return;
@@ -135,10 +193,10 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
             offerings.forEach((offering) => {
                 const scheduled = parseCourseTimes(course, offering);
                 current.push(scheduled);
-                combineSchedules(courses, index + 1, current, result);
+                OldcombineSchedules(courses, index + 1, current, result);
                 current.pop();
             });
-        };
+        };*/
 
         const allSchedules: ScheduledCourse[][] = [];
         combineSchedules(courses, 0, [], allSchedules);
@@ -163,7 +221,13 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
             return schedule;
         };
 
-        const schedulesAfterConflictCheck = allSchedules.map((schedule) => markConflicts([...schedule]));
+        const schedulesAfterConflictCheck = allSchedules.map((schedule) => {
+            const scheduleCopy = [...schedule];
+            markConflicts(scheduleCopy);
+            assignColorsToSchedule(scheduleCopy);
+            return scheduleCopy;
+        });
+
         setScheduleOptions(schedulesAfterConflictCheck);
         setSelectedScheduleIndex(0);
     }, [allCourseData, schedules, currentSemester, currentSemesterPlan]);
@@ -232,10 +296,11 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
                                                 return (
                                                     <div
                                                         key={`${course.code}-${t.day}-${idx}`}
-                                                        className={`absolute left-0 right-0 px-1 text-xs font-bold rounded ${course.conflict ? "bg-red-400" : getCourseColor(course.code)}`}
+                                                        className={`absolute left-0 right-0 px-1 text-xs font-bold rounded ${course.conflict ? "bg-red-400" : course.color}`}
                                                         style={{ top: `${top}px`, height: `${height}px` }}
                                                     >
-                                                        {course.code}
+                                                        {course.code} <br />
+                                                        <span className="font-bold">{course.type}</span>
                                                     </div>
                                                 );
                                             })
