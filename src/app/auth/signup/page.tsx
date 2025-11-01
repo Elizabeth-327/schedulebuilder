@@ -22,7 +22,7 @@ export default function SignUpPage() {
             if (result?.error) {
                 setError(result.error);
             } else {
-                router.push('/schedule'); // go to schedule page
+                router.push('/auth/signin'); // successful signup, go to signin page
             }
         } catch (err) {
             setError('An unexpected error occured');
@@ -37,6 +37,13 @@ export default function SignUpPage() {
                 placeholder="Email"
                 value={email}
                 onChange = {(e) => setEmail(e.target.value)}
+                required
+            />
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange = {(e) => setPassword(e.target.value)}
                 required
             />
             {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -21,7 +21,7 @@ export default function SignInPage() {
             if(result?.error) {
                 setError(result.error);
             } else {
-                router.push('./schedule');
+                router.push('/schedule');
             }
         } catch (err) {
             setError('Unexpected error occured.');

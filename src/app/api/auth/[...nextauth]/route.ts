@@ -31,7 +31,6 @@ const authHandlers = {
             password,
             options: {
                 emailRedirectTo: `${process.env.NEXTAUTH_URL}`,
-                
             },
         });
 
@@ -80,9 +79,9 @@ export const authOptions: NextAuthOptions = {
             credentials: {
                 email: { label: "Email", type: "email", placeholder: 'Enter email' },
                 password: { label: "Password", type: "password", placeholder: 'Enter password' },
-                mode: { label: "Mode", type: "text" }
+                mode: { label: "Mode", type: "text", placeholder: "signin, signup, or resetpassword"},
             },
-            async authorize(credentials): Promise<CustomUser | null> {
+            async authorize(credentials){
                 try {
                     if(!credentials) return null;
                     const { email, password, mode } = credentials;
