@@ -261,7 +261,10 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
             </div>
             
             {/* Grid */}
-            <div className="grid grid-cols-6 border border-gray-300 min-h-[600px] relative">
+            <div 
+                className="grid grid-cols-6 border border-gray-300 w-full" 
+                style={{ gridTemplateRows: `auto repeat(${hours.length}, 60px)` }} // 60 px per hour
+            >
                 {/* Top-left empty cell */} 
                 <div className="border-b border-gray-300"></div>
 
