@@ -9,6 +9,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { createClient } from '@/app/utils/server';
 import { SupabaseTokens } from '@/app/types/custom';
 import { cookies } from 'next/headers';
+import { useErrorOverlayReducer } from 'next/dist/next-devtools/dev-overlay/shared';
+import { userAgent } from 'next/server';
 
 // interfaces
 interface CustomUser {
@@ -45,7 +47,6 @@ declare module "next-auth/jwt" {
     }
 }
 
-
 // Auth handlers for supabase
 const authHandlers = {
     async handleSignup(email: string, password: string) {
@@ -81,9 +82,24 @@ const authHandlers = {
         if (error) {
             console.error('[AUTH] Signin error: ', error);
             throw new Error(error.message);
-        }
+        } 
+
         if (!data.user?.id) {
             throw new Error('Invalid credentials');
+        }
+        else {
+            const {data: userCheck} = await serverDBClient.from("Users").select("user_uuid").eq("user_uuid", data.user.id);
+            if (!userCheck || userCheck.length === 0) {
+                const {error} = await serverDBClient.from("Users").insert([
+                    {user_uuid: data.user.id, user_name: data.user.email}
+                ]);
+                if (error) {
+                    console.error(error.message);
+                }
+                else {
+                    console.log("Add user success?!?!?!");
+                }
+            }
         }
         
         return data;

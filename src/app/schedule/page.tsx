@@ -1,104 +1,74 @@
 "use client";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Course, CourseOffering, LooseSchedule, Schedule, Semester } from "../types/custom";
 
 // Components
 import ScheduleBuilder from "../components/ScheduleBuilder";
 
-// Hardcoded course data
-export type Course = {
-    code: string;               // e.g. "EECS 168"
-    name: string;               // e.g. "Programming I"
-    offerings: Section[];       // at least one lecture offering
-    labSections?: Section[];    // optional
-    discussionSections?: Section[]; // optional
-};
-
-export type Section = {
-    classNumber: string;
-    times: string;              // e.g. "MWF 10:00 AM - 10:50 AM"
-    professor?: string;         // not always present (e.g., labs/discussions)
-    location: string;
-    seatsAvailable: string;
-}
-
 const allCourses: Course[] = [
     { 
-        code: "EECS 168", 
+        code: "EECS 168",
+        number: "168",
+        departmentCode: "EECS",
         name: "Programming I", 
-        offerings: [
-            { classNumber: "14320", times: "TuTh 09:30 AM - 10:45 AM", professor: "John Gibbons", location: "LEEP2 G411", seatsAvailable: "30" },
-            { classNumber: "15769", times: "MWF 10:00 AM - 10:50 AM", professor: "John Gibbons", location: "LEEP2 2415", seatsAvailable: "65" }
+        sections: [
+            { class_nbr: 14320, component: "LEC", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "TuTh", start: "09:30", end: "10:45", instructor: "John Gibbons", room: "LEEP2 G411", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
+            { class_nbr: 15769, component: "LEC", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "MWF", start: "10:00", end: "10:50", instructor: "John Gibbons", room: "LEEP2 2415", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ],
         labSections: [
-            { classNumber: "14877", times: "M 08:00 AM - 09:50 AM", location: "EATN 1005B", seatsAvailable: "7"},
-            { classNumber: "18328", times: "F 08:00 AM - 09:50 AM", location: "EATN 1005B", seatsAvailable: "10"}
+            { class_nbr: 14877, component: "LAB", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "M", start: "08:00", end: "09:50", room: "EATN 1005B", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
+            { class_nbr: 18328, component: "LAB", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "F", start: "08:00", end: "09:50", room: "EATN 1005B", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ]
     },
-
-    //{
-        //code: "EECS 468",
-        //name: "Programming Paradigms",
-        //offerings: [
-            //{ classNumber: "21363", times: "MWF 11:00 AM - 11:50 AM", professor: "David Johnson", location: "LEEP2 2300", seatsAvailable: "14" }
-        //]
-    //},
     {
         code: "BIOL 636",
+        number: "636",
+        departmentCode: "BIOL",
         name: "Biochemistry I",
-        offerings: [
-            { classNumber: "49572", times: "TuTh 09:30 AM - 10:45 AM", professor: "Roberto de Guzman", location: "GL 1146", seatsAvailable: "12" }
+        sections: [
+            { class_nbr: 49572, component: "LEC", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "TuTh", start: "09:30", end: "10:45", instructor: "Roberto de Guzman", room: "GL 1146", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ],
         discussionSections: [
-            { classNumber: "49720", times: "M 01:00 PM - 01:50 PM", location: "HAW 1025", seatsAvailable: "0" },
-            { classNumber: "49722", times: "W 03:00 PM - 03:50 PM", location: "WES 1049", seatsAvailable: "5" },
-            { classNumber: "49721", times: "Tu 04:00 PM - 04:50 PM", location: "WES 4037", seatsAvailable: "7" }
+            { class_nbr: 49720, component: "DIS", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "M", start: "13:00", end: "13:50", room: "HAW 1025", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
+            { class_nbr: 49722, component: "DIS", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "W", start: "15:00", end: "15:50", room: "WES 1049", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
+            { class_nbr: 49721, component: "DIS", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "Tu", start: "16:00", end: "16:50", room: "WES 4037", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ]
     },
     {
         code: "EECS 582",
+        number: "582",
+        departmentCode: "EECS",
         name: "Computer Science & Interdisciplinary Computing Capstone",
-        offerings: [
-            { classNumber: "44164", times: "MW 12:00 PM - 12:50 PM", professor: "David Johnson", location: "EATN 2", seatsAvailable: "45" }
+        sections: [
+            { class_nbr: 44164, component: "LEC", course: "EECS 582", course_nbr: 582, course_title: "Computer Science & Interdisciplinary Computing Capstone", meeting_days: "MW", start: "12:00", end: "12:50", instructor: "David Johnson", room: "EATN 2", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ]
     },
     {
         code: "EECS 465",
+        number: "465",
+        departmentCode: "EECS",
         name: "Cyber Defense",
-        offerings: [
-            { classNumber: "56028", times: "TuTh 02:00 PM - 02:50 PM", professor: "Alexandru Bardas", location: "HAW 1005", seatsAvailable: "59" }
+        sections: [
+            { class_nbr: 56028, component: "LEC", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "TuTh", start: "14:00", end: "14:50", instructor: "Alexandru Bardas", room: "HAW 1005", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ],
         labSections: [
-            { classNumber: "56029", times: "F 11:00 AM - 11:50 AM", location: "EATN 2003", seatsAvailable: "25" },
-            { classNumber: "56030", times: "W 11:00 AM - 11:50 AM", location: "EATN 2003", seatsAvailable: "0" },
-            { classNumber: "57402", times: "M 04:00 PM - 04:50 PM", location: "EATN 2003", seatsAvailable: "34" }
+            { class_nbr: 56029, component: "LAB", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "F", start: "11:00", end: "11:50", room: "EATN 2003", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
+            { class_nbr: 56030, component: "LAB", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "W", start: "11:00", end: "11:50", room: "EATN 2003", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
+            { class_nbr: 57402, component: "LAB", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "M", start: "16:00", end: "16:50", room: "EATN 2003", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
         ]
     }
 ]; 
 
-const semesterPlans: Record<string, string[]> = {
-  "Fall 2024": ["With MAE305", "Just 4 courses", "With HIS291"],
-  "Spring 2025": ["With COS333", "With PHI203"],
-  "Fall 2025": ["With MAT301", "Minimal schedule"],
-}
-
-export type ScheduleData = Record<string, Record<string, string[]>>; // string[] corresponds to array of courses for each Semester + SemesterPlan combo
-
-const schedules: ScheduleData = ({
-    "Fall 2024": {
-        "With MAE305": ["EECS 168", "EECS 468", "BIOL 636"],
-        "Just 4 courses": ["EECS 168", "EECS 465", "EECS 468", "BIOL 636"],
-        "With HIS291": ["EECS 465", "EECS 468", "BIOL 636"],
-    },
-    "Spring 2025": {
-        "With COS333": ["EECS 582", "EECS 465"],
-        "With PHI203": ["EECS 468", "BIOL 636"],
-    },
-    "Fall 2025": {
-        "With MAT301": ["EECS 168", "EECS 582"],
-        "Minimal schedule": ["EECS 465"],
-    },
-});
+const schedules: LooseSchedule[] = [
+    {
+        term: "Fall 2025",
+        courses: [
+            allCourses.find(course => course.code === "EECS 186")!,
+            allCourses.find(course => course.code === "EECS 465")!
+        ]
+    }
+]
 
 function PageInner() {
     const searchParams = useSearchParams();
@@ -109,10 +79,8 @@ function PageInner() {
         <main className="p-4">
             <ScheduleBuilder 
                 allCourseData={allCourses}
-                semesterPlans={semesterPlans}
                 schedules={schedules}
                 currentSemester={semester}
-                currentSemesterPlan={semesterPlan}
             />
         </main>
     );

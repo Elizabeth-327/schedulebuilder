@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, FormEventHandler } from 'react';
-import { CourseRow } from '../types/custom';
+import { CourseOffering } from '../types/custom';
 import { getCourses } from '../supabaseAccess';
 
 export default function CourseSearch() {
 
     // STATE
 
-    const [courses, setCourses] = useState<CourseRow[]>([]);
+    const [courses, setCourses] = useState<CourseOffering[]>([]);
     const [loading, setLoading] = useState(true);
 
     // LIFECYCLE

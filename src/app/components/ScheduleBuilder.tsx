@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Course } from "../schedule/page";
+import { Course } from "../types/custom";
 import Tabs from "./Tabs";
 import WeeklyScheduleGrid from "../components/WeeklyScheduleGrid";
 import { ScheduleData } from "../schedule/page";

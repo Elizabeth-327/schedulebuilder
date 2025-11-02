@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Course, Section } from "../schedule/page";
+import { Course, CourseOffering } from "../types/custom";
 import { ScheduleData } from "../schedule/page";
 
 interface WeeklyScheduleGridProps {
@@ -73,43 +73,28 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
     };
 
     const timeStringToDecimal = (timeStr: string) => {
-        const [time, meridiem] = timeStr.split(" ");
-        const [hours, minutes] = time.split(":").map(Number);
-        let h = hours;
-        if (meridiem === "PM" && h !== 12) h += 12;
-        if (meridiem === "AM" && h === 12) h = 0;
-        return h + minutes / 60;
+        const [hours, minutes] = timeStr.split(":").map(Number);
+        return hours + minutes / 60;
     };
     
-    const parseCourseTimes = (course: Course, offering: Section): ScheduledCourse => {
+    const parseCourseTimes = (course: Course, offering: CourseOffering): ScheduledCourse => {
         const allTimes: { day: string; start: number; end: number }[] = [];
-        
-        /*
-        const sections = [
-        ...(offering.times ? [offering] : []),
-        ...(course.labSections || []),
-        ...(course.discussionSections || []),
-        ];
-        */
-        const sections = offering.times ? [offering] : []; // only parses 
-        sections.forEach((section) => {
-            const dayTimes = section.times.split(","); // e.g., ["MWF 10:00 AM - 10:50 AM"]
-            dayTimes.forEach((dt: string) => {
-                const firstSpace = dt.indexOf(" ");
-                const daysPart = dt.substring(0, firstSpace);
-                const hoursPart = dt.substring(firstSpace + 1);
-                const [startStr, endStr] = hoursPart.split("-").map((s) => s.trim());
-                const start = timeStringToDecimal(startStr);
-                const end = timeStringToDecimal(endStr);
+       
+        if (offering.meeting_days && offering.start && offering.end) {
+            const daysPart = offering.meeting_days;
+            const start = timeStringToDecimal(offering.start);
+            const end = timeStringToDecimal(offering.end);
 
-                const daysMap: Record<string, string> = {
-                M: "Mon",
-                T: "Tue",
-                W: "Wed",
-                Th: "Thu",
-                F: "Fri",
-                };
-                const daysList: string[] = [];
+            const daysMap: Record<string, string> = {
+            M: "Mon",
+            T: "Tue",
+            W: "Wed",
+            Th: "Thu",
+            F: "Fri",
+            };
+
+            const daysList: string[] = [];
+            if (daysPart) {
                 for (let i = 0; i < daysPart.length; i++) {
                     if (daysPart[i] === "T" && daysPart[i + 1] === "h") {
                         daysList.push("Thu");
@@ -119,23 +104,33 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
                     else if (daysPart[i] === "W") daysList.push("Wed");
                     else if (daysPart[i] === "F") daysList.push("Fri");
                 }
+            }
 
-                daysList.forEach((d) => allTimes.push({ day: d, start, end }));
-            });
-    });
-    return { code: course.code, classNumber: offering.classNumber, times: allTimes, conflict: false };
-};
+            daysList.forEach(d => allTimes.push({ day: d, start, end }));
+        }
+
+        return { code: course.code, classNumber: offering.number!, times: allTimes, conflict: false };
+    };
+
     // Function to generate all combinations of lecture + lab + discussion
     const getSectionCombinations = (course: Course) => {
-        const lectures = course.offerings; // array of Sections
+        const lectures = course.lectureSections || [null]; // array of Sections
         const labs = course.labSections || [null]; // array of Sections or array with one null element
         const discussions = course.discussionSections || [null];
 
-        const combinations: any[] = []; // typed as any[] because i'm lazy and tired of typescript
-        lectures.forEach((lec) => {
+        if (!(lectures || labs || discussions)) {
+            throw new Error("No sections for this course! This is a database problem.");
+        }
+
+        const combinations: {
+            lecture: CourseOffering | null,
+            lab: CourseOffering | null,
+            discussion: CourseOffering | null
+        }[] = [];
+        lectures.forEach((lecture) => {
             labs.forEach((lab) => {
-                discussions.forEach((dis) => {
-                    combinations.push({lec, lab, dis});
+                discussions.forEach((discussion) => {
+                    combinations.push({lecture, lab, discussion});
                 })
             })
         });
@@ -167,36 +162,20 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
             // outer recursion -> moves through courses
             // inner forEach loop -> iterates through section combinations of current course
             combinations.forEach((combo) => {
-                const scheduledLecture = {...parseCourseTimes(course, combo.lec), type: "LEC" as const};
+                const scheduledLecture = combo.lecture ? {...parseCourseTimes(course, combo.lecture), type: "LEC" as const} : null;
                 const scheduledLab = combo.lab ? {...parseCourseTimes(course, combo.lab), type: "LAB" as const} : null;
-                const scheduledDiscussion = combo.dis ? {...parseCourseTimes(course, combo.dis), type: "DIS" as const} : null;
+                const scheduledDiscussion = combo.discussion ? {...parseCourseTimes(course, combo.discussion), type: "DIS" as const} : null;
                 
-                current.push(scheduledLecture);
+                if (scheduledLecture) current.push(scheduledLecture);
                 if (scheduledLab) current.push(scheduledLab);
                 if (scheduledDiscussion) current.push(scheduledDiscussion);
 
                 combineSchedules(courses, index + 1, current, result);
-                current.pop();
+                if (scheduledLecture) current.pop();
                 if (scheduledLab) current.pop();
                 if (scheduledDiscussion) current.pop();
             });
         };
-        // Old version
-        /*const OldcombineSchedules = (courses: Course[], index = 0, current: ScheduledCourse[] = [], result: ScheduledCourse[][] = []) => {
-            if (index === courses.length) {
-                result.push([...current]);
-                return;
-            }
-
-            const course = courses[index];
-            const offerings = course.offerings;
-            offerings.forEach((offering) => {
-                const scheduled = parseCourseTimes(course, offering);
-                current.push(scheduled);
-                OldcombineSchedules(courses, index + 1, current, result);
-                current.pop();
-            });
-        };*/
 
         const allSchedules: ScheduledCourse[][] = [];
         combineSchedules(courses, 0, [], allSchedules);
@@ -292,7 +271,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
 
                             {/* Day columns */}
                             {days.map(day => (
-                                <div key={`${day}-${hour}`} className="border-l border-b border-gray-300 relative min-h-[40px]">
+                                <div key={`${day}-${hour}`} className="border-l border-b border-gray-300 relative min-h-10">
                                     {/* Course blocks for this day/hour */}
                                     {scheduleOptions[selectedScheduleIndex]?.map((course) => 
                                         course.times
