@@ -37,6 +37,7 @@ export default function ScheduleBuilder({ allCourseData, semesterPlans, schedule
                 activeSemester={activeSemester}
                 activePlan={activeSemesterPlan}
             />
+            <CourseSearch />
             <WeeklyScheduleGrid
                 allCourseData={allCourseData}
                 schedules={schedules}

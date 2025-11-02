@@ -120,8 +120,10 @@ function PageInner() {
 
 export default function Page() {
     return (
-        <Suspense fallback={<div>Loading schedule...</div>}>
-            <PageInner />
-        </Suspense>
+        <>
+            <Suspense fallback={<div>Loading schedule...</div>}>
+                <PageInner />
+            </Suspense>
+        </>
     );
 }
