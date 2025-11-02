@@ -59,7 +59,7 @@ export default function SignInPage() {
                     required
                 />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button className="bg-blue-400 rounded shadow-lg hover:bg-blue-500 p-2" type="submit">Submit</button>
+                <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
             </form>            
         </div>
 
