@@ -27,6 +27,7 @@ export default function SignInPage() {
                 mode: 'signin',
                 redirect: false,
             });
+            
             if(result?.error) {
                 setError(result.error);
             } else {

@@ -24,7 +24,7 @@ export default function Tabs({ semesters, semesterPlans, activeSemester, activeP
     return (
         <div className="flex flex-col gap-2">
             {/* Semester Tabs */}
-            <div className="flex space-x-4 border-b mb-2">
+            <div className="flex space-x-1 mb-0.5">
                 {semesters.map(semester => {
                     const isActive = semester === activeSemester;
                     return (
@@ -42,14 +42,15 @@ export default function Tabs({ semesters, semesterPlans, activeSemester, activeP
             </div>
 
             {/* Plan Tabs */}
-            <div className="flex gap-2">
+            {/*<div className="flex gap-2">*/}
+            <div className="flex space-x-1 mb-2">
                 {semesterPlans[activeSemester].map((semesterPlan) => {
                     const isActivePlan = semesterPlan === activePlan;
                     return (
                         <button
                             key={semesterPlan}
                             onClick={() => handlePlanChange(semesterPlan)}
-                            className={`px-3 py-1 rounded-md border text-sm ${
+                            className={`px-3 py-1 rounded-t text-sm ${
                                 isActivePlan
                                 ? "bg-green-500 text-white"
                                 : "bg-gray-100 hover:bg-gray-200"
