@@ -1,5 +1,5 @@
 "use client";
-
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Components
@@ -100,7 +100,7 @@ const schedules: ScheduleData = ({
     },
 });
 
-export default function Page() {
+function PageInner() {
     const searchParams = useSearchParams();
 
     const semester = searchParams.get("semester") || "Fall 2025"; // fallback semester
@@ -117,46 +117,11 @@ export default function Page() {
         </main>
     );
 }
-/*
-export default function Semesters() {
-    const router = useRouter();
 
-    // Temporary hardcoded semesters
-    const semesters = [
-        { id: "fall-2025", name: "Fall 2025", courses: ["EECS 581", "EECS 678", "EECS 658", "BIOL 636"] },
-        { id: "spring-2026", name: "Spring 2026", courses: ["EECS 582", "BIOL 638"] }
-    ]
+export default function Page() {
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Welcome, Jayhawk!</h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {semesters.map((semester) => (
-                    <div
-                        key={semester.id}
-                        className="border rounded p-4 cursor-pointer hover:shadow-lg"
-                        onClick={() => router.push(`/semesters/${semester.id}`)}
-                    >
-                        <h2 className="font-semibold mb-2">{semester.name}</h2>
-                        <div className="flex flex-wrap gap-2">
-                            {semester.courses.map((courseId) => {
-                                return(
-                                    <span
-                                        className="bg-blue-100 text-blue-800 px-2 py-1 rounded"
-                                    >
-                                        {courseId}
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    </div>
-                ))}
-                <div
-                    className="border-2 border-dashed rounded p-4 flex items-center justify-center cursor-pointer hover:bg-gray-100"
-                    onClick={() => router.push("/semesters/new")}
-                >
-                    + Add New Semester
-                </div>
-            </div>
-        </div>
-    )
-}*/
+        <Suspense fallback={<div>Loading schedule...</div>}>
+            <PageInner />
+        </Suspense>
+    );
+}
