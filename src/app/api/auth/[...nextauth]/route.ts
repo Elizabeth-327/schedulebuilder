@@ -1,4 +1,8 @@
 /* 
+ * Author: Janna Dungao
+ * Date: 11/02/25
+ * Description: Handles routing for use login and user 
+ * Sources:
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
  */
@@ -72,6 +76,7 @@ const authHandlers = {
 export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
+        maxAge: 7 * 24 * 60 * 60, // one week
     },
     providers: [
         CredentialsProvider({
@@ -81,9 +86,8 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password", placeholder: 'Enter password' },
                 mode: { label: "Mode", type: "text", placeholder: "signin, signup, or resetpassword"},
             },
-            async authorize(credentials){
+            async authorize(credentials): Promise<CustomUser | null>{
                 try {
-                    if(!credentials) return null;
                     const { email, password, mode } = credentials;
                     const lowerMode = mode?.toLowerCase();
 
