@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, FormEventHandler } from 'react';
-import { getCourses } from "../supabaseAccess";
 import { CourseRow } from '../types/custom';
+import { getCourses } from '../supabaseAccess';
 
 export default function CourseSearch() {
 
@@ -35,14 +35,13 @@ export default function CourseSearch() {
         const input = event.currentTarget.elements.namedItem("coursesearch") as HTMLInputElement;
         let query = input.value;
         query = query.trim(); // process more
-        // do something
-        console.log(query);
+        // do something -- probably add to the schedule UI.
     }
 
     return (
         <div>
             <form action="submit" onSubmit={formSubmitHandler}>
-                <input type="text" name="coursesearch" id="coursesearch" />
+                <input type="text" name="coursesearch" id="coursesearch" className='border' />
             </form>
         </div>
     );

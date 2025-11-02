@@ -6,7 +6,9 @@
 
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { supabase } from '@client/utils/supabase/client';
+import { createClient } from '@/app/utils/server';
+import { SupabaseTokens } from '@/app/types/custom';
+import { cookies } from 'next/headers';
 
 // interfaces
 interface CustomUser {
@@ -20,13 +22,35 @@ interface CustomSession {
         id: string;
         email: string;
     };
+    supabase: SupabaseTokens;
     expires: string;
 }
+
+declare module "next-auth" {
+    interface User {
+        supabaseAccessToken?: string;
+        supabaseRefreshToken?: string;
+    }
+
+    interface Session {
+        supabase: SupabaseTokens;
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        userId?: string;
+        supabaseAccessToken?: string;
+        supabaseRefreshToken?: string;
+    }
+}
+
 
 // Auth handlers for supabase
 const authHandlers = {
     async handleSignup(email: string, password: string) {
-        const { data, error } = await supabase.auth.signUp({
+        const serverDBClient = await createClient(cookies());
+        const { data, error } = await serverDBClient.auth.signUp({
             email,
             password,
             options: {
@@ -48,7 +72,8 @@ const authHandlers = {
     },
 
     async handleSignIn(email: string, password: string) {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const serverDBClient = await createClient(cookies());
+        const { data, error } = await serverDBClient.auth.signInWithPassword({
             email,
             password,
         });
@@ -60,11 +85,14 @@ const authHandlers = {
         if (!data.user?.id) {
             throw new Error('Invalid credentials');
         }
-        return data.user;
+        
+        return data;
     },
     
     async handleResetPassword(email: string) {
         // later
+        return;
+        const serverDBClient = await createClient(cookies());
     },
 };
 
@@ -90,12 +118,21 @@ export const authOptions: NextAuthOptions = {
                     if (!email && !password) {
                         throw new Error('Password is required');
                     }
-                    const user = lowerMode === 'signup' ? await authHandlers.handleSignup(email, password) : await authHandlers.handleSignIn(email, password);
+                    
+                    let result;
+                    if (lowerMode === 'signup') {
+                        const user = await authHandlers.handleSignup(email, password);
+                        result = { user };
+                    } else {
+                        result = await authHandlers.handleSignIn(email, password);
+                    }
                     
                     return {
-                        id: user.id,
-                        email: user.email ?? email,
-                        name: user.email ?? email,
+                        id: result.user.id,
+                        email: result.user.email ?? email,
+                        name: result.user.email ?? email,
+                        supabaseAccessToken: result.session?.access_token,
+                        supabaseRefreshToken: result.session?.refresh_token,
                     };
                 } catch (error) {
                     console.error('[AUTH] Authorization error:', {
@@ -116,6 +153,8 @@ export const authOptions: NextAuthOptions = {
                 token.userId = user.id;
                 token.email = user.email;
                 token.lastUpdated = new Date().toISOString();
+                token.supabaseAccessToken = (user as any).supabaseAccessToken;
+                token.supabaseRefreshToken = (user as any).supabaseRefreshToken;
             }
             return token;
         },
@@ -126,6 +165,10 @@ export const authOptions: NextAuthOptions = {
                     id: token.userId as string,
                     email: token.email as string,
                 },
+                supabase: {
+                    access_token: token.supabaseAccessToken as string,
+                    refresh_token: token.supabaseRefreshToken as string,
+                }
             };
         },
     },
@@ -144,7 +187,8 @@ export const authOptions: NextAuthOptions = {
         },
         async signOut({ token }) {
             if (token?.userId) {
-                await supabase.auth.signOut();
+                const serverDBClient = await createClient(cookies());
+                await serverDBClient.auth.signOut();
             }
         },
     },

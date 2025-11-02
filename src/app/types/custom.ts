@@ -9,3 +9,8 @@ export type CourseRow = {
     end_date: string | null; 
     start_date: string | null; 
 }
+
+export type SupabaseTokens = {
+    access_token: string;
+    refresh_token: string;
+}
