@@ -7,6 +7,7 @@ import { ScheduleData } from "../schedule/page";
 import CourseSearch from "../components/CourseSearch";
 import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
+import { SignOutButton } from "../auth/signout/page";
 
 type ScheduleBuilderProps = {
     allCourseData: Course[],
@@ -43,6 +44,7 @@ export default function ScheduleBuilder({ allCourseData, semesterPlans, schedule
             <SessionProvider>
                 <SavedConfigs />
             </SessionProvider>
+            <SignOutButton />
             <WeeklyScheduleGrid
                 allCourseData={allCourseData}
                 schedules={schedules}

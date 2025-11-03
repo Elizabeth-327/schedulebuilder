@@ -14,5 +14,5 @@ export function SignOutButton() {
     const handleSignOut = async () => {
         await signOut({ callbackUrl: '/auth/signin' });
     };
-    return <button onClick={handleSignOut}>Sign Out</button>;
+    return <button className="text-white bg-blue-600 rounded shadow-xl absolute top-4 right-4 hover:bg-blue-700 p-2"onClick={handleSignOut}>Sign Out</button>;
 }
