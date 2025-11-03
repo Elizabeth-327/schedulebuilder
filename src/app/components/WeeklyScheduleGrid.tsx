@@ -292,7 +292,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
 
                             {/* Day columns */}
                             {days.map(day => (
-                                <div key={`${day}-${hour}`} className="border-l border-b border-gray-300 rounded relative min-h-[40px]">
+                                <div key={`${day}-${hour}`} className="border-l border-b border-gray-300 font-bold rounded relative min-h-[40px]">
                                     {/* Course blocks for this day/hour */}
                                     {scheduleOptions[selectedScheduleIndex]?.map((course) => 
                                         course.times
