@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEventHandler, useRef } from "react";
 import { CourseRow } from "../types/custom";
 import { getCourses } from "../supabaseAccess";
+import CourseInfoPopUp from "./CourseInfoPopUp";
 
 export default function CourseSearch() {
   // STATE
@@ -12,6 +13,7 @@ export default function CourseSearch() {
   const [query, setQuery] = useState("");
   const resultRef = useRef<HTMLUListElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseRow | null>(null);
 
   // LIFECYCLE
 
@@ -92,11 +94,17 @@ export default function CourseSearch() {
               <ul role="listbox" aria-label="Course results" className="p-2 ">
                 {filteredCourses.map((course) => (
                   <li key={course.class_nbr} role="option">
-                    <div className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer">
+                    <div
+                      className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
+                      onClick={() => {
+                        setSelectedCourse(course);
+                        setIsSearchOpen(false);
+                      }}
+                    >
                       <strong>
                         {course.course} {course.number}
                       </strong>
-                      : {course.course_title}
+                      : {course.course_title} - {course.component}
                     </div>
                   </li>
                 ))}
@@ -105,6 +113,16 @@ export default function CourseSearch() {
           )}
         </div>
       </form>
+      {selectedCourse && (
+        <CourseInfoPopUp
+          course={selectedCourse}
+          onClose={() => setSelectedCourse(null)}
+          onAddtoSchedule={(course) => {
+            // TODO: Implement add to schedule functionality
+            console.log("Adding course to schedule:", course);
+          }}
+        />
+      )}
     </div>
   );
 }
