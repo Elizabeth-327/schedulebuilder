@@ -43,7 +43,7 @@ export default function Tabs({ semesters, semesterPlans, activeSemester, activeP
 
             {/* Plan Tabs */}
             {/*<div className="flex gap-2">*/}
-            <div className="flex space-x-1 mb-2">
+            <div className="flex space-x-1 mb-2 text-black">
                 {semesterPlans[activeSemester].map((semesterPlan) => {
                     const isActivePlan = semesterPlan === activePlan;
                     return (
@@ -52,7 +52,7 @@ export default function Tabs({ semesters, semesterPlans, activeSemester, activeP
                             onClick={() => handlePlanChange(semesterPlan)}
                             className={`px-3 py-1 rounded-t text-sm ${
                                 isActivePlan
-                                ? "bg-green-500 text-white"
+                                ? "bg-green-500"
                                 : "bg-gray-100 hover:bg-gray-200"
                             }`}
                         >

@@ -71,7 +71,7 @@ export default function CourseSearch() {
     : [];
 
   return (
-    <div>
+    <div className="text-black">
       <form action="submit" onSubmit={formSubmitHandler}>
         <div className="relative top-full left-0 w-full inline-block w-80 sm:w-150 ">
           <input
