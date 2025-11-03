@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEventHandler } from "react";
+import { useState, useEffect, FormEventHandler, useRef } from "react";
 import { CourseRow } from "../types/custom";
 import { getCourses } from "../supabaseAccess";
 
@@ -10,6 +10,8 @@ export default function CourseSearch() {
   const [courses, setCourses] = useState<CourseRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const resultRef = useRef<HTMLUListElement>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // LIFECYCLE
 
@@ -22,6 +24,21 @@ export default function CourseSearch() {
     };
 
     loadCourses();
+  }, []);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        resultRef.current &&
+        !resultRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   if (loading) {
@@ -53,7 +70,7 @@ export default function CourseSearch() {
 
   return (
     <div>
-      <form action="submit" onSubmit={formSubmitHandler} className>
+      <form action="submit" onSubmit={formSubmitHandler}>
         <div className="relative top-full left-0 w-full inline-block w-80 sm:w-150 ">
           <input
             type="text"
@@ -61,23 +78,31 @@ export default function CourseSearch() {
             id="coursesearch"
             className="border"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+            }}
+            onFocus={() => setIsSearchOpen(true)}
             placeholder=" Search Courses"
           />
-          <div className="absolute top-full left-0 w-full z-30 mt-1 bg-white rounded border max-h-64 overflow-y-auto">
-            <ul role="listbox" aria-label="Course results" className="p-2 ">
-              {filteredCourses.map((course) => (
-                <li key={course.class_nbr} role="option">
-                  <div className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer">
-                    <strong>
-                      {course.course} {course.number}
-                    </strong>
-                    : {course.course_title}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {isSearchOpen && filteredCourses.length > 0 && (
+            <div
+              ref={resultRef}
+              className="absolute top-full left-0 w-full z-30 mt-1 bg-white rounded border max-h-64 overflow-y-auto"
+            >
+              <ul role="listbox" aria-label="Course results" className="p-2 ">
+                {filteredCourses.map((course) => (
+                  <li key={course.class_nbr} role="option">
+                    <div className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer">
+                      <strong>
+                        {course.course} {course.number}
+                      </strong>
+                      : {course.course_title}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </form>
     </div>
