@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Course } from "../schedule/page";
+import { Course } from "../types/custom";
 import Tabs from "./Tabs";
 import WeeklyScheduleGrid from "../components/WeeklyScheduleGrid";
 import { ScheduleData } from "../schedule/page";
 import CourseSearch from "../components/CourseSearch";
+import SavedConfigs from "./SavedConfigs";
+import { SessionProvider } from "next-auth/react";
 
 type ScheduleBuilderProps = {
     allCourseData: Course[],
@@ -37,6 +39,10 @@ export default function ScheduleBuilder({ allCourseData, semesterPlans, schedule
                 activeSemester={activeSemester}
                 activePlan={activeSemesterPlan}
             />
+            <CourseSearch />
+            <SessionProvider>
+                <SavedConfigs />
+            </SessionProvider>
             <WeeklyScheduleGrid
                 allCourseData={allCourseData}
                 schedules={schedules}
