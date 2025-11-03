@@ -5,14 +5,18 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4">
-      <h1 className="text-3xl font-bold mb-6">KU Schedule Planner</h1>
-      <button
-        className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={() => router.push("/schedule")}
-      >
-        Build Schedule
-      </button>
+    <div className="flex h-screen p-4">    
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css"/>
+        <div className="flex flex-col items-center justify-center m-auto max-w-sm rounded-xl shadow-xl bg-white border-gray-300 p-8">
+            <h1 className="text-3xl text-black font-bold mb-6">KU Schedule Planner</h1>
+            <button
+                className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={() => router.push("/schedule")}
+            >
+                Build Schedule
+            </button>
+            
+        </div>
 
     </div>
   )

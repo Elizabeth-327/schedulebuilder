@@ -233,9 +233,9 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
     }, [allCourseData, schedules, currentSemester, currentSemesterPlan]);
 
     return (
-        <div className="flex items-start gap-2 w-full">
+        <div className="flex items-start gap-2 text-black w-full">
             {/* Navigation bar */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-xl">
                 <button
                     onClick={() =>
                         setSelectedScheduleIndex((prev) => Math.max(prev - 1, 0))
@@ -263,7 +263,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
             
             {/* Grid */}
             <div 
-                className="grid border border-gray-300 w-2/3 ml-auto"
+                className="grid border border-gray-300 w-2/3 ml-auto text-black rounded"
                 style={{ 
                     gridTemplateColumns: "60px repeat(5, 1fr)", // 60 px width for time column + equal width for day columns
                     gridTemplateRows: `auto repeat(${hours.length}, 60px)` // 60 px height for each hour block
@@ -292,7 +292,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
 
                             {/* Day columns */}
                             {days.map(day => (
-                                <div key={`${day}-${hour}`} className="border-l border-b border-gray-300 relative min-h-[40px]">
+                                <div key={`${day}-${hour}`} className="border-l border-b border-gray-300 rounded relative min-h-[40px]">
                                     {/* Course blocks for this day/hour */}
                                     {scheduleOptions[selectedScheduleIndex]?.map((course) => 
                                         course.times
