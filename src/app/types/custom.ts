@@ -3,6 +3,7 @@ export type CourseRow = {
     component: string | null; 
     course: string | null; 
     course_nbr: number | null; 
+    number: string | null;
     course_title: string | null; 
     course_topic: string | null; 
     end: string | null; 
