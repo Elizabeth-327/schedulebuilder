@@ -1,6 +1,6 @@
 import { createClient } from "../utils/client";
 import { useSession } from "next-auth/react";
-
+// What is this component for? (Elizabeth asking)
 export default function SavedConfigs() {
     
     const { data: session } = useSession();
@@ -12,7 +12,7 @@ export default function SavedConfigs() {
 
     return (
         <>
-            <h1>{token}</h1>;
+            {/*<h1>{token}</h1>;*/} 
         </>
     );
 }
