@@ -12,7 +12,6 @@ export default function Home() {
           alt="JayDoc"
           className="fixed top-10 left-16 w-44 h-auto"
         />
-
         <img
           src="/imgs/dorothy.png"
           alt="Dorothy"
@@ -41,6 +40,20 @@ export default function Home() {
           onClick={() => router.push("/schedule")}
         >
           Build Schedule
+        </button>
+        <br></br>
+        <button
+          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => router.push("auth/signin")}
+        >
+          Login
+        </button>
+        <br></br>
+        <button
+          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => router.push("auth/signup")}
+        >
+          Create Account
         </button>
       </div>
     </div>
