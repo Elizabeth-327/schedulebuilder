@@ -111,8 +111,9 @@ const authHandlers = {
     
     async handleResetPassword(email: string) {
         // later
+
         return;
-        const serverDBClient = await createClient(cookies());
+        //const serverDBClient = await createClient(cookies());
     },
 };
 
@@ -131,6 +132,25 @@ export const authOptions: NextAuthOptions = {
                 mode: { label: "Mode", type: "text", placeholder: "signin, signup, or resetpassword"},
             },
             async authorize(credentials): Promise<CustomUser | null>{
+                // handle password reset
+                if (credentials.mode === "resetpassword") {
+                    try {
+
+                        const { data, error } = await authHandlers.resetPasswordForEmail(
+                            credentials?.email,
+                            {
+                                redirectTo: `{process.env.NEXT_PUBLIC_APP_URL}/auth/update-password`,
+                            }
+                        );
+                        if (error) throw error;
+                        return null;
+                    } catch (error) {
+                        console.error("Reset password error: ", error);
+                        throw new Error("Failed to send reset password email");
+                    }
+                }
+
+                // handle signup and signin
                 try {
                     const { email, password, mode } = credentials;
                     const lowerMode = mode?.toLowerCase();

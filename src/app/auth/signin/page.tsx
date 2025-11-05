@@ -60,6 +60,7 @@ export default function SignInPage() {
                 />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
+                
             </form>            
         </div>
 
