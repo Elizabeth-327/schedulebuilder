@@ -33,24 +33,23 @@ export default function Home() {
         <h1 className="text-8xl font-bold font-sans drop-shadow-lg mb-6">
           KU Schedule Planner
         </h1>
-        Yo gaba gaba 
-        scooby doo
+        Yo gaba gaba scooby doo
+        <br></br>
+        <br></br>
         <button
           className="px-6 py-3 bg-cyan-400 text-white font-sans rounded hover:bg-cyan-500"
           onClick={() => router.push("/schedule")}
         >
           Build Schedule
         </button>
-        <br></br>
         <button
-          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-6 py-3 bg-cyan-400 text-white rounded hover:bg-blue-700"
           onClick={() => router.push("auth/signin")}
         >
           Login
         </button>
-        <br></br>
         <button
-          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-6 py-3 bg-cyan-400 text-white rounded hover:bg-blue-700"
           onClick={() => router.push("auth/signup")}
         >
           Create Account
