@@ -1,86 +1,96 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Course, CourseOffering, LooseSchedule, Schedule, Semester } from "../types/custom";
+import { Course, CourseOffering, Plan, Schedule} from "../types/custom";
+import { getCourses, getSchedules, getUserInfo } from "../supabaseAccess";
+import { SessionProvider, useSession } from "next-auth/react";
+import { User } from "next-auth";
 
 // Components
 import ScheduleBuilder from "../components/ScheduleBuilder";
 
-const allCourses: Course[] = [
-    { 
-        code: "EECS 168",
-        number: "168",
-        departmentCode: "EECS",
-        name: "Programming I", 
-        sections: [
-            { class_nbr: 14320, component: "LEC", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "TuTh", start: "09:30", end: "10:45", instructor: "John Gibbons", room: "LEEP2 G411", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
-            { class_nbr: 15769, component: "LEC", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "MWF", start: "10:00", end: "10:50", instructor: "John Gibbons", room: "LEEP2 2415", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ],
-        labSections: [
-            { class_nbr: 14877, component: "LAB", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "M", start: "08:00", end: "09:50", room: "EATN 1005B", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
-            { class_nbr: 18328, component: "LAB", course: "EECS 168", course_nbr: 168, course_title: "Programming I", meeting_days: "F", start: "08:00", end: "09:50", room: "EATN 1005B", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ]
-    },
-    {
-        code: "BIOL 636",
-        number: "636",
-        departmentCode: "BIOL",
-        name: "Biochemistry I",
-        sections: [
-            { class_nbr: 49572, component: "LEC", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "TuTh", start: "09:30", end: "10:45", instructor: "Roberto de Guzman", room: "GL 1146", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ],
-        discussionSections: [
-            { class_nbr: 49720, component: "DIS", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "M", start: "13:00", end: "13:50", room: "HAW 1025", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
-            { class_nbr: 49722, component: "DIS", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "W", start: "15:00", end: "15:50", room: "WES 1049", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
-            { class_nbr: 49721, component: "DIS", course: "BIOL 636", course_nbr: 636, course_title: "Biochemistry I", meeting_days: "Tu", start: "16:00", end: "16:50", room: "WES 4037", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ]
-    },
-    {
-        code: "EECS 582",
-        number: "582",
-        departmentCode: "EECS",
-        name: "Computer Science & Interdisciplinary Computing Capstone",
-        sections: [
-            { class_nbr: 44164, component: "LEC", course: "EECS 582", course_nbr: 582, course_title: "Computer Science & Interdisciplinary Computing Capstone", meeting_days: "MW", start: "12:00", end: "12:50", instructor: "David Johnson", room: "EATN 2", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ]
-    },
-    {
-        code: "EECS 465",
-        number: "465",
-        departmentCode: "EECS",
-        name: "Cyber Defense",
-        sections: [
-            { class_nbr: 56028, component: "LEC", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "TuTh", start: "14:00", end: "14:50", instructor: "Alexandru Bardas", room: "HAW 1005", number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ],
-        labSections: [
-            { class_nbr: 56029, component: "LAB", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "F", start: "11:00", end: "11:50", room: "EATN 2003", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
-            { class_nbr: 56030, component: "LAB", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "W", start: "11:00", end: "11:50", room: "EATN 2003", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null },
-            { class_nbr: 57402, component: "LAB", course: "EECS 465", course_nbr: 465, course_title: "Cyber Defense", meeting_days: "M", start: "16:00", end: "16:50", room: "EATN 2003", instructor: null, number: null, section_nbr: null, semester: null, start_date: null, end_date: null, course_topic: null }
-        ]
-    }
-]; 
-
-const schedules: LooseSchedule[] = [
-    {
-        term: "Fall 2025",
-        courses: [
-            allCourses.find(course => course.code === "EECS 186")!,
-            allCourses.find(course => course.code === "EECS 465")!
-        ]
-    }
-]
-
 function PageInner() {
+    const { data: session } = useSession();
+    const [allSections, setAllSections] = useState<CourseOffering[]>([]);
+    const [allCourses, setAllCourses] = useState<Course[]>([]);
+    const [userData, setUserData] = useState<User | null>(null);
+    const [schedules, setSchedules] = useState<Schedule[]>([]);
     const searchParams = useSearchParams();
 
-    const semester = searchParams.get("semester") || "Fall 2025"; // fallback semester
-    const semesterPlan = searchParams.get("plan") || semesterPlans[semester][0];
+    // Fetch user info, courses, and sections on mount
+    useEffect(() => {
+        const fetchData = async () => {
+            if (session === null) {
+                console.warn("No user found. This is fine.");
+            }
+
+            try {
+                const user = session ? await getUserInfo(session.supabase) : null;
+                setUserData(user);
+
+                const sections = await getCourses(session?.supabase);
+                setAllSections(sections);
+
+                const courseCodes = new Set<string>(sections.map(section => section.course + " " + section.number));
+                const courses = [...courseCodes].map(code => {
+                    const components = code.split(" ", 2);
+                    return new Course(
+                        code,
+                        sections.find(section => section.course + " " + section.number === code)?.course_title || "Untitled Course",
+                        sections.filter(section => section.course === components[0] && section.number === components[1])
+                    );
+                });
+                setAllCourses(courses);
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+        };
+        fetchData();
+    }, [session]);
+
+    // Fetch schedules when user data is available
+    useEffect(() => {
+        const fetchSchedules = async () => {
+            if (session && userData) {
+                try {
+                    const fetchedSchedules = await getSchedules(session.supabase, userData.id);
+                    if (fetchedSchedules.length > 0) {
+                        setSchedules(fetchedSchedules);
+                        return;
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch schedules:", error);
+                }
+            }
+            // Fallback default schedule
+            setSchedules([{
+                name: "Default",
+                term: "Spring 2026",
+                sections: [
+                    allSections.find(s => s.course === "EECS" && s.number === "662")!,
+                    allSections.find(s => s.course === "EECS" && s.number === "510")!,
+                ],
+                courses: [
+                    allCourses.find(c => c.code === "EECS 662")!,
+                    allCourses.find(c => c.code === "EECS 510")!,
+                ]
+            }]);
+        };
+        fetchSchedules();
+    }, [session, userData, allSections, allCourses]);
+
+    const semester = searchParams.get("semester") || schedules[0]?.term || "Spring 2026";
+    const currentSchedule = schedules.find(s => s.name === searchParams.get("plan")) || schedules[0];
+
     return (
         <main className="p-4">
             <ScheduleBuilder 
-                allCourseData={allCourses}
+                allCourses={allCourses}
+                allSections={allSections}
                 schedules={schedules}
                 currentSemester={semester}
+                currentSchedule={currentSchedule}
+                setSchedules={setSchedules}
             />
         </main>
     );
@@ -90,7 +100,9 @@ export default function Page() {
     return (
         <>
             <Suspense fallback={<div>Loading schedule...</div>}>
-                <PageInner />
+                <SessionProvider>
+                    <PageInner />
+                </SessionProvider>
             </Suspense>
         </>
     );

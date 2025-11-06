@@ -1,21 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Course, CourseOffering } from "../types/custom";
-import { ScheduleData } from "../schedule/page";
+import { Course, CourseOffering, Schedule } from "../types/custom";
 
 interface WeeklyScheduleGridProps {
-  allCourseData: Course[];
-  schedules: ScheduleData;
+  allCourses: Course[];
+  schedulesInSemester: Schedule[];
   currentSemester: string;
-  currentSemesterPlan: string; 
+  currentSchedule: Schedule; 
 }
 
-type ScheduledCourse = {
-    code: string;
-    classNumber: string;
-    times: { day: string; start: number; end: number}[];
-    conflict: boolean;
-    type?: "LEC" | "LAB" | "DIS";
+type ScheduledCourse = CourseOffering & {
     color?: string;
 };
 
@@ -30,9 +24,9 @@ const hours = Array.from({ length: 14 }, (_, i) => {
 // Map single-letter day abbreviations to full names
 const dayMap: Record<string, string> = {
   M: "Mon",
-  T: "Tue",
+  Tu: "Tue",
   W: "Wed",
-  R: "Thu", // Using R for Thursday
+  Th: "Thu",
   F: "Fri",
 };
 
@@ -53,14 +47,14 @@ const getCourseColor = (code: string) => {
 
 const assignColorsToSchedule = (schedule: ScheduledCourse[]) => {
     let colorIndex = 0;
-    schedule.forEach((sc) => {
+    schedule.forEach(sc => {
         sc.color = courseColors[colorIndex % courseColors.length];
         colorIndex++;
     });
     return schedule;
 }
 
-export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSemester, currentSemesterPlan }: WeeklyScheduleGridProps) {
+export default function WeeklyScheduleGrid({ allCourses, schedulesInSemester, currentSemester, currentSchedule}: WeeklyScheduleGridProps) {
     const [scheduleOptions, setScheduleOptions] = useState<ScheduledCourse[][]>([]);
     const [selectedScheduleIndex, setSelectedScheduleIndex] = useState(0);
 
@@ -139,8 +133,8 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
     }
     // Generate all possible schedules
     useEffect(() => {
-        const courseCodes = schedules[currentSemester][currentSemesterPlan];
-        const courses = allCourseData.filter((course) => courseCodes.includes(course.code));
+        const courseCodes = schedulesInSemester[currentSemester][currentSchedule];
+        const courses = allCourses.filter((course) => courseCodes.includes(course.code));
         
         if (courses.length === 0) {
             setScheduleOptions([]);
@@ -209,7 +203,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
 
         setScheduleOptions(schedulesAfterConflictCheck);
         setSelectedScheduleIndex(0);
-    }, [allCourseData, schedules, currentSemester, currentSemesterPlan]);
+    }, [allCourses, schedulesInSemester, currentSemester, currentSchedule]);
 
     return (
         <div className="flex items-start gap-2 w-full">

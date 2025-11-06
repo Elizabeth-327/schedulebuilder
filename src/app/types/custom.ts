@@ -1,6 +1,6 @@
 export type CourseOffering = {
     class_nbr: number // uid-serving
-    component: string | null
+    component: "LEC" | "LBN" | "DIS" | string | null
     course: string | null
     course_nbr: number | null
     course_title: string | null
@@ -22,26 +22,38 @@ export type SupabaseTokens = {
     refresh_token: string;
 }
 
-export type Schedule = {
-    name: string;
-    term?: string;
-    courses: CourseOffering[];
-}
+// A plan is a list of classes
+// A schedule is a list classes and their sections/times 
 
-export type LooseSchedule = {
-    term?: string;
+export type Plan = {
+    name: string;
+    term: string;
     courses: Course[];
 }
 
-export type Course = {
-    code: string;               // e.g. "EECS 168" -- uid-serving
-    number: string;
-    departmentCode: string;
-    name: string;               // e.g. "Programming I"
+export type Schedule = Plan & {
     sections: CourseOffering[];
-    lectureSections?: CourseOffering[];
-    labSections?: CourseOffering[];    // optional
-    discussionSections?: CourseOffering[]; // optional
-};
+}
 
-export type Semester = Schedule[];
+export class Course {
+    public number: string;
+    public departmentCode: string;
+    public lectureSections: CourseOffering[];
+    public labSections: CourseOffering[];
+    public discussionSections: CourseOffering[];
+    public otherSections: CourseOffering[];
+
+    constructor(
+        public code: string,
+        public name: string,
+        public sections: CourseOffering[],
+    ) {
+        const codeComponents = this.code.split(" ", 2);
+        this.number = codeComponents[1];
+        this.departmentCode = codeComponents[0];
+        this.lectureSections = sections.filter(section => section.component === "LEC");
+        this.labSections = sections.filter(section => section.component === "LBN");
+        this.discussionSections = sections.filter(section => section.component === "DIS");
+        this.otherSections = sections.filter(section => !section.component || section.component.match(/(LEC)|(LBN)|(DIS)/));
+    }
+};

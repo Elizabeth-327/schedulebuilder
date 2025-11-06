@@ -1,54 +1,57 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Course } from "../types/custom";
+import { useState, useEffect, Dispatch, SetStateAction, useMemo } from "react";
+import { Course, CourseOffering, Schedule } from "../types/custom";
 import Tabs from "./Tabs";
-import WeeklyScheduleGrid from "../components/WeeklyScheduleGrid";
-import { ScheduleData } from "../schedule/page";
+// import WeeklyScheduleGrid from "../components/WeeklyScheduleGrid";
 import CourseSearch from "../components/CourseSearch";
 import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
 
 type ScheduleBuilderProps = {
-    allCourseData: Course[],
-    semesterPlans: Record<string, string[]>,
-    schedules: ScheduleData,
+    allCourses: Course[],
+    allSections: CourseOffering[],
+    schedules: Schedule[],
     currentSemester: string,
-    currentSemesterPlan: string
+    currentSchedule: Schedule,
+    setSchedules: Dispatch<SetStateAction<Schedule[]>>
 }
 
-export default function ScheduleBuilder({ allCourseData, semesterPlans, schedules, currentSemester, currentSemesterPlan }: ScheduleBuilderProps) {
+export default function ScheduleBuilder({ allCourses, allSections, schedules, currentSemester, currentSchedule, setSchedules }: ScheduleBuilderProps) {
     const [activeSemester, setActiveSemester] = useState(currentSemester);
-    const [activeSemesterPlan, setActiveSemesterPlan] = useState(currentSemesterPlan);
+    const [activeSchedule, setActiveSchedule] = useState(currentSchedule)
 
-    const semesters = Object.keys(semesterPlans);
+    const schedulesInSemester = useMemo(() => schedules.filter(s => s.term === activeSemester), [activeSemester]);
+    const semesters = [...(new Set<string>(allSections.map(s => s.semester || "Spring 2026")))];
 
     // When URL query changes, update tabs' visual state
     useEffect(() => {
         setActiveSemester(currentSemester);
-        setActiveSemesterPlan(currentSemesterPlan);
-    }, [currentSemester, currentSemesterPlan]); 
-    
-    const [searchQuery, setSearchQuery] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
+        setActiveSchedule(currentSchedule);
+    }), [currentSemester]
     
     return (
         <div>
             <Tabs
                 semesters={semesters}
-                semesterPlans={semesterPlans}
                 activeSemester={activeSemester}
-                activePlan={activeSemesterPlan}
+                schedulesInSemester={schedulesInSemester}
+                activeSchedule={currentSchedule || schedulesInSemester[0] || []}
             />
             <CourseSearch />
             <SessionProvider>
                 <SavedConfigs />
             </SessionProvider>
-            <WeeklyScheduleGrid
-                allCourseData={allCourseData}
-                schedules={schedules}
-                currentSemester={activeSemester}
-                currentSemesterPlan={activeSemesterPlan}
-            />
+            
+            
         </div>
     );
 }
+
+/*
+<WeeklyScheduleGrid
+    allCourses={allCourses}
+    schedulesInSemester={schedulesInSemester}
+    currentSemester={activeSemester}
+    currentSchedule={currentSchedule || schedulesInSemester[0] || []}
+/>
+*/
