@@ -54,6 +54,6 @@ export class Course {
         this.lectureSections = sections.filter(section => section.component === "LEC");
         this.labSections = sections.filter(section => section.component === "LBN");
         this.discussionSections = sections.filter(section => section.component === "DIS");
-        this.otherSections = sections.filter(section => !section.component || section.component.match(/(LEC)|(LBN)|(DIS)/));
+        this.otherSections = sections.filter(section => !section.component || !section.component.match(/^[(LEC)(LBN)(DIS)]$/));
     }
-};
+}

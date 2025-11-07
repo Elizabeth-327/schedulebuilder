@@ -22,7 +22,7 @@ const hours = Array.from({ length: 14 }, (_, i) => {
 });
 
 // Map single-letter day abbreviations to full names
-const dayMap: Record<string, string> = {
+const dayMap = {
   M: "Mon",
   Tu: "Tue",
   W: "Wed",
