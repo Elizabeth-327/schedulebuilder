@@ -32,20 +32,22 @@ export async function addSchedule(tokens: SupabaseTokens, user_uuid: string, sch
     }
 }
               
-export async function getSchedules(tokens: SupabaseTokens, user_uuid: string) {
+export async function getSchedules(tokens: SupabaseTokens, user_uuid: string): Promise<Schedule[]> {
     await databaseClient.auth.setSession(tokens);
 
     const { data, error } = await databaseClient.from("Users").select("schedules").eq("user_uuid", user_uuid);
+    
     if (error) {
-        console.error("Error in getSchedules:\n" + error.message);
+        console.error("Error in getSchedules:", error.message);
+        return []; // Explicitly return empty array on error
     }
-    else if (!data || !data[0]) {
-        console.error("Data not gotten for user.");
+
+    if (!data || data.length === 0 || !data[0].schedules) {
+        // This case handles when the user exists but has no schedules, or the query returns no rows.
+        return []; // Explicitly return empty array
     }
-    else {
-        return data[0].schedules as unknown as Schedule[]
-    }
-    return [] as Schedule[];
+
+    return data[0].schedules as any as Schedule[];
 }
 
 export async function getUserInfo(tokens: SupabaseTokens) {
