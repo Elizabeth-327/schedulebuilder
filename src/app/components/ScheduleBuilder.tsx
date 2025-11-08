@@ -20,15 +20,16 @@ export default function ScheduleBuilder({ allCourses, allSections, schedules, cu
     const [activeSemester, setActiveSemester] = useState(currentSemester);
     const [activeSchedule, setActiveSchedule] = useState(currentSchedule)
 
-    const schedulesInSemester = useMemo(() => schedules.filter(s => s.term === activeSemester), [activeSemester]);
+    // Schedules (array of Schedule types filtered by currently active semester 
+    const schedulesInSemester = useMemo(() => schedules.filter(s => s.term === activeSemester), [activeSemester, schedules]); // updates when either activeSemester or schedules change
     const semesters = [...(new Set<string>(allSections.map(s => s.semester || "Spring 2026")))];
-
+    
     // When URL query changes, update tabs' visual state
     useEffect(() => {
         setActiveSemester(currentSemester);
         setActiveSchedule(currentSchedule);
-    }), [currentSemester]
-    
+    }, [currentSemester, currentSchedule]);
+
     return (
         <div>
             <Tabs

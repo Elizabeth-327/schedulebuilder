@@ -17,7 +17,7 @@ function PageInner() {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const searchParams = useSearchParams();
 
-    // Fetch user info, courses, and sections on mount
+    // Fetch user info, courses, and sections on mount (when user session changes)
     useEffect(() => {
         const fetchData = async () => {
             if (session === null) {
@@ -28,10 +28,11 @@ function PageInner() {
                 const user = session ? await getUserInfo(session.supabase) : null;
                 setUserData(user);
 
-                const sections = await getCourses(session?.supabase);
+                const sections = await getCourses(session?.supabase); // Fetch all course section offerings from "Courses" table in Supabase
                 setAllSections(sections);
 
-                const courseCodes = new Set<string>(sections.map(section => section.course + " " + section.number));
+                const courseCodes = new Set<string>(sections.map(section => section.course + " " + section.number)); // Get all the unique course codes 
+                // courses is an array of Course objects constructed from unique course codes
                 const courses = [...courseCodes].map(code => {
                     const components = code.split(" ", 2);
                     return new Course(
@@ -80,7 +81,7 @@ function PageInner() {
     }, [session, userData, allSections, allCourses]);
 
     const semester = searchParams.get("semester") || schedules[0]?.term || "Spring 2026";
-    const currentSchedule = schedules.find(s => s.name === searchParams.get("plan")) || schedules[0];
+    const currentSchedule = schedules.find(s => s.name === searchParams.get("plan")) || schedules[0]; // Defaults to first schedule object in schedules array if user did not click on a specific schedule
 
     return (
         <main className="p-4">

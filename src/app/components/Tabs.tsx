@@ -10,7 +10,6 @@ type TabsProps = {
 
 export default function Tabs({ semesters, activeSemester, schedulesInSemester, activeSchedule }: TabsProps) {
     const router = useRouter();
-    
     const handleSemesterChange = (semester: string) => {
         // Default to first plan of new semester
         const firstPlan = schedulesInSemester[0] || [];
