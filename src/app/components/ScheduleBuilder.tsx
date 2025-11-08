@@ -7,7 +7,8 @@ import CourseSearch from "../components/CourseSearch";
 import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
 import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
-
+import { useSession } from "next-auth/react";
+import { addSchedule } from "../supabaseAccess";
 type ScheduleBuilderProps = {
     allCourses: Course[],
     allSections: CourseOffering[],
@@ -20,6 +21,7 @@ type ScheduleBuilderProps = {
 export default function ScheduleBuilder({ allCourses, allSections, schedules, currentSemester, currentSchedule, setSchedules }: ScheduleBuilderProps) {
     const [activeSemester, setActiveSemester] = useState(currentSemester);
     const [activeSchedule, setActiveSchedule] = useState(currentSchedule)
+    const {data: session} = useSession();
 
     // Schedules (array of Schedule types filtered by currently active semester 
     console.log("SchedulesBuilder schedules:", schedules);
@@ -33,6 +35,36 @@ export default function ScheduleBuilder({ allCourses, allSections, schedules, cu
         setActiveSchedule(currentSchedule);
     }, [currentSemester, currentSchedule]);
 
+    const addCourseToSchedule = async (course: Course) => {
+        const user_uuid = session!.user.id;
+        const tokens = session!.supabase;
+
+        // Update local schedules state
+        const updatedSchedules = schedules.map(schedule => {
+            if (schedule.name === activeSchedule.name && schedule.term === activeSemester) {
+                // Avoid adding duplicate courses
+                const courseExists = schedule.courses.some(c => c.code === course.code);
+                if (courseExists) return schedule;
+
+                // Returns updated schedule with new course added
+                return {
+                    ...schedule,
+                    courses: [...schedule.courses, course]
+                };
+            };
+            return schedule;
+        });
+        setSchedules(updatedSchedules);
+
+        // Update schedules in Supabase
+        const updatedSchedule = updatedSchedules.find(s => s.name === activeSchedule.name && s.term === activeSemester);
+        if (!updatedSchedule) return;
+        const success = await addSchedule(tokens, user_uuid, updatedSchedule); // from src/app/supabaseAccess.ts
+        if (!success) {
+            alert("Failed to save schedule.");
+        }
+    };
+    
     return (
         <div>
             <Tabs
