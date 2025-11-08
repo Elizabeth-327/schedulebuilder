@@ -64,7 +64,7 @@ function PageInner() {
                 }
             }
             // Fallback default schedule
-            setSchedules([{
+            /*setSchedules([{
                 name: "Default",
                 term: "Spring 2026",
                 sections: [
@@ -75,20 +75,34 @@ function PageInner() {
                     allCourses.find(c => c.code === "EECS 662")!,
                     allCourses.find(c => c.code === "EECS 510")!,
                 ]
-            }]);
+            }]);*/
         };
         fetchSchedules();
     }, [session, userData, allSections, allCourses]);
 
-    const semester = searchParams.get("semester") || schedules[0]?.term || "Spring 2026";
-    const currentSchedule = schedules.find(s => s.name === searchParams.get("plan")) || schedules[0]; // Defaults to first schedule object in schedules array if user did not click on a specific schedule
+    // Default empty schedule for UI display only (when user has selected no courses)
+    const defaultSchedule: Schedule = {
+        name: "Default Plan",
+        term: "Spring 2026",
+        sections: [],
+        courses: []
+    };
 
+    const displaySchedules = schedules.length > 0 ? schedules : [defaultSchedule];
+
+    const semester = searchParams.get("semester") || displaySchedules[0].term;
+    const currentSchedule = 
+        schedules.length > 0
+            ? schedules.find(s => s.name === searchParams.get("plan")) || schedules[0]
+            : defaultSchedule;
+
+    console.log("Schedules array:", schedules);
     return (
         <main className="p-4">
             <ScheduleBuilder 
                 allCourses={allCourses}
                 allSections={allSections}
-                schedules={schedules}
+                schedules={displaySchedules}
                 currentSemester={semester}
                 currentSchedule={currentSchedule}
                 setSchedules={setSchedules}

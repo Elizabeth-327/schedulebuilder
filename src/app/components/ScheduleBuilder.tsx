@@ -6,6 +6,7 @@ import Tabs from "./Tabs";
 import CourseSearch from "../components/CourseSearch";
 import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
+import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
 
 type ScheduleBuilderProps = {
     allCourses: Course[],
@@ -21,7 +22,9 @@ export default function ScheduleBuilder({ allCourses, allSections, schedules, cu
     const [activeSchedule, setActiveSchedule] = useState(currentSchedule)
 
     // Schedules (array of Schedule types filtered by currently active semester 
+    console.log("SchedulesBuilder schedules:", schedules);
     const schedulesInSemester = useMemo(() => schedules.filter(s => s.term === activeSemester), [activeSemester, schedules]); // updates when either activeSemester or schedules change
+    console.log("schedulesInSemester:", schedulesInSemester);
     const semesters = [...(new Set<string>(allSections.map(s => s.semester || "Spring 2026")))];
     
     // When URL query changes, update tabs' visual state
@@ -35,24 +38,22 @@ export default function ScheduleBuilder({ allCourses, allSections, schedules, cu
             <Tabs
                 semesters={semesters}
                 activeSemester={activeSemester}
-                schedulesInSemester={schedulesInSemester}
+                //schedulesInSemester={schedulesInSemester}
+                schedules = {schedules}
                 activeSchedule={currentSchedule || schedulesInSemester[0] || []}
             />
             <CourseSearch />
             <SessionProvider>
                 <SavedConfigs />
             </SessionProvider>
-            
+            {<WeeklyScheduleGrid
+                allCourses={allCourses}
+                schedulesInSemester={schedulesInSemester}
+                currentSemester={activeSemester}
+                currentSchedule={currentSchedule || schedulesInSemester[0] || []}
+            />}
             
         </div>
     );
 }
 
-/*
-<WeeklyScheduleGrid
-    allCourses={allCourses}
-    schedulesInSemester={schedulesInSemester}
-    currentSemester={activeSemester}
-    currentSchedule={currentSchedule || schedulesInSemester[0] || []}
-/>
-*/

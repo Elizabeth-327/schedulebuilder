@@ -9,8 +9,23 @@ interface WeeklyScheduleGridProps {
   currentSchedule: Schedule; 
 }
 
-type ScheduledCourse = CourseOffering & {
+/*type ScheduledCourse = CourseOffering & {
     color?: string;
+};*/
+
+type ScheduledTime = {
+  day: string;     // e.g. "Mon"
+  start: number;   // decimal hour
+  end: number;     // decimal hour
+};
+
+type ScheduledCourse = {
+  code: string; // e.g. "EECS 168"
+  //classNumber: string | null;
+  times: ScheduledTime[];
+  conflict: boolean;
+  color?: string;
+  type: "LEC" | "LBN" | "DIS" | "OTHER";
 };
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -72,7 +87,8 @@ export default function WeeklyScheduleGrid({ allCourses, schedulesInSemester, cu
     };
     
     const parseCourseTimes = (course: Course, offering: CourseOffering): ScheduledCourse => {
-        const allTimes: { day: string; start: number; end: number }[] = [];
+        //const allTimes: { day: string; start: number; end: number }[] = [];
+        const allTimes: ScheduledTime[] = [];
        
         if (offering.meeting_days && offering.start && offering.end) {
             const daysPart = offering.meeting_days;
@@ -103,7 +119,8 @@ export default function WeeklyScheduleGrid({ allCourses, schedulesInSemester, cu
             daysList.forEach(d => allTimes.push({ day: d, start, end }));
         }
 
-        return { code: course.code, classNumber: offering.number!, times: allTimes, conflict: false };
+        //return { code: course.code, classNumber: offering.number!, times: allTimes, conflict: false };
+        return { code: course.code, times: allTimes, conflict: false, type: offering.component as "LEC" | "LBN" | "DIS" | "OTHER" } as ScheduledCourse;
     };
 
     // Function to generate all combinations of lecture + lab + discussion
@@ -133,9 +150,11 @@ export default function WeeklyScheduleGrid({ allCourses, schedulesInSemester, cu
     }
     // Generate all possible schedules
     useEffect(() => {
-        const courseCodes = schedulesInSemester[currentSemester][currentSchedule];
-        const courses = allCourses.filter((course) => courseCodes.includes(course.code));
-        
+        //const courseCodes = schedulesInSemester[currentSemester][currentSchedule];
+        //const courses = allCourses.filter((course) => courseCodes.includes(course.code));
+        console.log("Current Schedule in WeeklyScheduleGrid:", currentSchedule);
+        const courses = currentSchedule.courses || []; // array of Course objects for the current schedule
+        console.log(courses);
         if (courses.length === 0) {
             setScheduleOptions([]);
             setSelectedScheduleIndex(0);
@@ -157,7 +176,7 @@ export default function WeeklyScheduleGrid({ allCourses, schedulesInSemester, cu
             // inner forEach loop -> iterates through section combinations of current course
             combinations.forEach((combo) => {
                 const scheduledLecture = combo.lecture ? {...parseCourseTimes(course, combo.lecture), type: "LEC" as const} : null;
-                const scheduledLab = combo.lab ? {...parseCourseTimes(course, combo.lab), type: "LAB" as const} : null;
+                const scheduledLab = combo.lab ? {...parseCourseTimes(course, combo.lab), type: "LBN" as const} : null;
                 const scheduledDiscussion = combo.discussion ? {...parseCourseTimes(course, combo.discussion), type: "DIS" as const} : null;
                 
                 if (scheduledLecture) current.push(scheduledLecture);

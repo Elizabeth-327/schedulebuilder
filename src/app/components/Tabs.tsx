@@ -3,17 +3,20 @@ import { Plan, Schedule } from "../types/custom";
 
 type TabsProps = {
     semesters: string[], // e.g. ["Fall 2025", "Spring 2025", etc.]
-    schedulesInSemester: Schedule[],
+    //schedulesInSemester: Schedule[],
+    schedules: Schedule[],
     activeSemester: string, // e.g. "Fall 2025"
     activeSchedule: Schedule,
 };
 
-export default function Tabs({ semesters, activeSemester, schedulesInSemester, activeSchedule }: TabsProps) {
+export default function Tabs({ semesters, activeSemester, schedules, activeSchedule }: TabsProps) {
     const router = useRouter();
+    const schedulesInSemester = schedules.filter(s => s.term === activeSemester);
     const handleSemesterChange = (semester: string) => {
         // Default to first plan of new semester
-        const firstPlan = schedulesInSemester[0] || [];
-        router.replace(`/schedule?semester=${encodeURIComponent(semester)}&plan=${encodeURIComponent(firstPlan.name)}`);
+        const schedulesForNewSemester = schedules.filter(s => s.term === semester);
+        const firstPlan = schedulesForNewSemester[0] || null;
+        router.replace(`/schedule?semester=${encodeURIComponent(semester)}&plan=${encodeURIComponent(firstPlan?.name ?? "")}`);
     };
 
     const handlePlanChange = (plan: Plan) => {

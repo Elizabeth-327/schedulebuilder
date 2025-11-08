@@ -19,7 +19,7 @@ export default function SavedConfigs() {
             // after load
             const loadSchedules = async () => {
                 if (session) {
-                    const courses = await getSchedules(session?.supabase);
+                    const courses = await getSchedules(session?.supabase, session?.user?.id);
                     setSavedSchedules(courses);
                 }
             };
@@ -31,7 +31,7 @@ export default function SavedConfigs() {
 
     return (
         <>
-            <h1>Logged in as: {session?.user?.email || "None"}</h1>;
+            <h1>Logged in as: {session?.user?.email || "None"}</h1>
             <section id="savedSchedulesSelector">
                 <select name="savedSchedules" size={savedSchedules.length}>
                     {savedSchedules.map(sch => <option value={sch.name}>{sch.name}</option>)}
