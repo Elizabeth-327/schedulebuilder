@@ -5,7 +5,12 @@ import { CourseOffering } from "../types/custom";
 import { getCourses } from "../supabaseAccess";
 import CourseInfoPopUp from "./CourseInfoPopUp";
 
-export default function CourseSearch() {
+// added props to course Search function
+interface CourseSearchProps {
+  onAddCourse?: (course: CourseOffering) => void;
+}
+
+export default function CourseSearch({ onAddCourse }: CourseSearchProps) {
   // STATE
 
   const [courses, setCourses] = useState<CourseOffering[]>([]);
@@ -13,7 +18,9 @@ export default function CourseSearch() {
   const [query, setQuery] = useState("");
   const resultRef = useRef<HTMLUListElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<CourseOffering | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CourseOffering | null>(
+    null
+  );
 
   // LIFECYCLE
 
@@ -118,7 +125,9 @@ export default function CourseSearch() {
           course={selectedCourse}
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
-            // TODO: Implement add to schedule functionality
+            if (onAddCourse) {
+              onAddCourse(course);
+            }
             console.log("Adding course to schedule:", course);
           }}
         />
