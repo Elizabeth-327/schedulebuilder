@@ -4,8 +4,17 @@ import { useState, useEffect, FormEventHandler, useRef } from "react";
 import { CourseOffering } from "../types/custom";
 import { getCourses } from "../supabaseAccess";
 import CourseInfoPopUp from "./CourseInfoPopUp";
+import { Course, Schedule } from "../types/custom";
 
-export default function CourseSearch() {
+interface CourseSearchProps {
+  allCourses: Course[];
+  onScheduleUpdate?: (course: Course) => void;
+}
+
+export default function CourseSearch({
+  allCourses,
+  onScheduleUpdate,
+}: CourseSearchProps) {
   // STATE
 
   const [courses, setCourses] = useState<CourseOffering[]>([]);
@@ -13,7 +22,9 @@ export default function CourseSearch() {
   const [query, setQuery] = useState("");
   const resultRef = useRef<HTMLUListElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<CourseOffering | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CourseOffering | null>(
+    null
+  );
 
   // LIFECYCLE
 
@@ -118,8 +129,14 @@ export default function CourseSearch() {
           course={selectedCourse}
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
-            // TODO: Implement add to schedule functionality
-            console.log("Adding course to schedule:", course);
+            const CourseCode = `${course.course} ${course.number}`;
+            const matchCourse = allCourses.find((c) => c.code === CourseCode);
+            if (course && onScheduleUpdate) {
+              onScheduleUpdate(matchCourse!);
+              setSelectedCourse(null);
+            } else {
+              alert(`Course: ${CourseCode} not found in master list.`);
+            }
           }}
         />
       )}
