@@ -37,13 +37,13 @@ const dayMap: Record<string, string> = {
 };
 
 const courseColors = [
-    "bg-blue-400",
-    "bg-green-400",
-    "bg-yellow-400",
-    "bg-purple-400",
-    "bg-pink-400",
-    "bg-indigo-400",
-    "bg-orange-400",
+    "bg-blue-200",
+    "bg-green-200",
+    "bg-yellow-200",
+    "bg-purple-200",
+    "bg-pink-200",
+    "bg-indigo-200",
+    "bg-orange-200",
 ];
 
 const getCourseColor = (code: string) => {
@@ -242,7 +242,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
             
             {/* Grid */}
             <div 
-                className="grid border border-gray-300 w-2/3 ml-auto text-black rounded"
+                className="grid border border-gray-300 rounded w-2/3 ml-auto"
                 style={{ 
                     gridTemplateColumns: "60px repeat(5, 1fr)", // 60 px width for time column + equal width for day columns
                     gridTemplateRows: `auto repeat(${hours.length}, 60px)` // 60 px height for each hour block
@@ -282,7 +282,7 @@ export default function WeeklyScheduleGrid({ allCourseData, schedules, currentSe
                                                 return (
                                                     <div
                                                         key={`${course.code}-${t.day}-${idx}`}
-                                                        className={`absolute left-0 right-0 px-1 text-xs font-bold rounded ${course.conflict ? "bg-red-400" : course.color}`}
+                                                        className={`absolute left-0 right-0 px-1 text-xs font-bold rounded text-center flex flex-col justify-center items-center ${course.conflict ? "bg-red-400" : course.color}`}
                                                         style={{ top: `${top}px`, height: `${height}px` }}
                                                     >
                                                         {course.code} <br />
