@@ -38,7 +38,7 @@ export default function Home() {
 
       </div>
       <div className="flex flex-col items-start space-y-8 pl-200 pr-64">
-        <h1 className="text-8xl font-bold font-sans drop-shadow-lg mb-6">
+        <h1 className="text-8xl text-blue-400 font-bold font-sans drop-shadow-lg mb-6">
           KU Schedule Planner
         </h1>
         Yo gaba gaba scooby doo
