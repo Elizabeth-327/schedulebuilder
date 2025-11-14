@@ -27,7 +27,15 @@ export default function CourseSearch({
   );
 
   // LIFECYCLE
+  // LIFECYCLE
 
+  useEffect(() => {
+    // after load
+    const loadCourses = async () => {
+      const courses = await getCourses();
+      setCourses(courses);
+      setLoading(false);
+    };
   useEffect(() => {
     // after load
     const loadCourses = async () => {
@@ -53,11 +61,53 @@ export default function CourseSearch({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+    loadCourses();
+  }, []);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        resultRef.current &&
+        !resultRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (loading) {
     return <h2>Loading Courses...</h2>;
   }
+  if (loading) {
+    return <h2>Loading Courses...</h2>;
+  }
 
+  function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const input = event.currentTarget.elements.namedItem(
+      "coursesearch"
+    ) as HTMLInputElement;
+    let query = input.value;
+    query = query.trim(); // process more
+    // do something -- probably add to the schedule UI.
+  }
+  const trimmed = query.trim().toLowerCase();
+  const filteredCourses = trimmed
+    ? courses.filter((course) => {
+        const num = Number(trimmed);
+        if (!Number.isNaN(num)) {
+          return course.class_nbr === num || course.course_nbr === num;
+        }
+        return (
+          (course.course_title?.toLowerCase().includes(trimmed) ?? false) ||
+          (course.course?.toLowerCase().includes(trimmed) ?? false)
+        );
+      })
+    : [];
   function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const input = event.currentTarget.elements.namedItem(
@@ -143,3 +193,4 @@ export default function CourseSearch({
     </div>
   );
 }
+

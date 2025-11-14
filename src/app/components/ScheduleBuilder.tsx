@@ -9,6 +9,8 @@ import { SessionProvider } from "next-auth/react";
 import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
 import { useSession } from "next-auth/react";
 import { addSchedule, updateSchedule } from "../supabaseAccess";
+import { SignOutButton } from "../auth/signout/page";
+
 type ScheduleBuilderProps = {
   allCourses: Course[];
   allSections: CourseOffering[];
@@ -140,6 +142,7 @@ export default function ScheduleBuilder({
       <SessionProvider>
         <SavedConfigs />
       </SessionProvider>
+      <SignOutButton />
       {
         <WeeklyScheduleGrid
           allCourses={allCourses}

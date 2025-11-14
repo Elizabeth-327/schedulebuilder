@@ -33,7 +33,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                             key={semester}
                             onClick={() => handleSemesterChange(semester)}
                             className={`px-4 py-2 rounded-t font-medium transition-colors ${
-                                isActive ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                isActive ? "bg-cyan-400 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             }`}
                         >
                             {semester}
@@ -53,7 +53,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                             onClick={() => handlePlanChange(semesterSchedule)}
                             className={`px-3 py-1 rounded-t text-sm ${
                                 isActivePlan
-                                ? "bg-green-500 text-white"
+                                ? "bg-emerald-400 text-white"
                                 : "bg-gray-100 hover:bg-gray-200"
                             }`}
                         >
