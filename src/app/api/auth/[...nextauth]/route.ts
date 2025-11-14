@@ -1,4 +1,8 @@
 /* 
+ * Author: Janna Dungao
+ * Date: 11/02/25
+ * Description: Handles routing for use login and user 
+ * Sources:
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
  */
@@ -9,6 +13,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { createClient } from '@/app/utils/server';
 import { SupabaseTokens } from '@/app/types/custom';
 import { cookies } from 'next/headers';
+
 
 // interfaces
 interface CustomUser {
@@ -45,7 +50,6 @@ declare module "next-auth/jwt" {
     }
 }
 
-
 // Auth handlers for supabase
 const authHandlers = {
     async handleSignup(email: string, password: string) {
@@ -81,18 +85,41 @@ const authHandlers = {
         if (error) {
             console.error('[AUTH] Signin error: ', error);
             throw new Error(error.message);
-        }
+        } 
+
         if (!data.user?.id) {
             throw new Error('Invalid credentials');
+        }
+        else {
+            const {data: userCheck} = await serverDBClient.from("Users").select("user_uuid").eq("user_uuid", data.user.id);
+            if (!userCheck || userCheck.length === 0) {
+                const {error} = await serverDBClient.from("Users").insert([
+                    {user_uuid: data.user.id, user_name: data.user.email}
+                ]);
+                if (error) {
+                    console.error(error.message);
+                }
+                else {
+                    console.log("Add user success?!?!?!");
+                }
+            }
         }
         
         return data;
     },
     
     async handleResetPassword(email: string) {
-        // later
-        return;
         const serverDBClient = await createClient(cookies());
+        const { data, error } = await serverDBClient.auth.resetPasswordForEmail(
+            email,
+            {
+                redirectTo: `${process.env.NEXTAUTH_URL}/auth/update-password`,
+            }
+        );
+        if (error) {
+            console.error(error.message);
+        }
+        return data;
     },
 };
 
@@ -100,6 +127,7 @@ const authHandlers = {
 export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
+        maxAge: 7 * 24 * 60 * 60, // one week
     },
     providers: [
         CredentialsProvider({
@@ -109,9 +137,23 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password", placeholder: 'Enter password' },
                 mode: { label: "Mode", type: "text", placeholder: "signin, signup, or resetpassword"},
             },
-            async authorize(credentials){
+            async authorize(credentials): Promise<CustomUser | null>{
+                // password reset
+                if (credentials.mode === "resetpassword") {
+                    try {
+                        const { data, error } = await authHandlers.handleResetPassword(
+                            credentials.email
+                        );
+                        if (error) throw error;
+                        return null;
+                    } catch (error) {
+                        console.error("Reset password error: ", error);
+                        throw new Error("Failed to send password reset email.");
+                    }
+                }
+
+                // signin / signup 
                 try {
-                    if(!credentials) return null;
                     const { email, password, mode } = credentials;
                     const lowerMode = mode?.toLowerCase();
 
@@ -175,7 +217,7 @@ export const authOptions: NextAuthOptions = {
     // Configuration
     pages: {
         signIn: '/auth/signin',
-        error: '/auth/error'
+        error: '/auth/error',
     },
     events: {
         async signIn({ user }) {

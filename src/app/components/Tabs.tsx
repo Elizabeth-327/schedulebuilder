@@ -43,7 +43,7 @@ export default function Tabs({ semesters, semesterPlans, activeSemester, activeP
 
             {/* Plan Tabs */}
             {/*<div className="flex gap-2">*/}
-            <div className="flex space-x-1 mb-2">
+            <div className="flex space-x-1 mb-2 text-black">
                 {semesterPlans[activeSemester].map((semesterPlan) => {
                     const isActivePlan = semesterPlan === activePlan;
                     return (

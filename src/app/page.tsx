@@ -1,5 +1,13 @@
-"use client";
+/* 
+ * Author: Janna Dungao
+ * Date: 11/02/25
+ * Description: 
+ * Sources:
+ * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
+ * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
+ */
 
+"use client";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -30,7 +38,7 @@ export default function Home() {
 
       </div>
       <div className="flex flex-col items-start space-y-8 pl-200 pr-64">
-        <h1 className="text-8xl font-bold font-sans drop-shadow-lg mb-6">
+        <h1 className="text-8xl text-blue-400 font-bold font-sans drop-shadow-lg mb-6">
           KU Schedule Planner
         </h1>
         Yo gaba gaba scooby doo

@@ -71,7 +71,7 @@ export default function CourseSearch() {
     : [];
 
   return (
-    <div>
+    <div className="text-black">
       <form action="submit" onSubmit={formSubmitHandler}>
         <div className="relative top-full left-0 w-full inline-block w-80 sm:w-150 ">
           <input
@@ -95,7 +95,7 @@ export default function CourseSearch() {
                 {filteredCourses.map((course) => (
                   <li key={course.class_nbr} role="option">
                     <div
-                      className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
+                      className="rounded border border-gray-500 p-3 hover:bg-gray-200 hover:border-black transition cursor-pointer"
                       onClick={() => {
                         setSelectedCourse(course);
                         setIsSearchOpen(false);

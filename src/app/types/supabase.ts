@@ -99,18 +99,21 @@ export type Database = {
       Users: {
         Row: {
           created_at: string
-          user_id: number
+          schedules: Json | null
           user_name: string | null
+          user_uuid: string
         }
         Insert: {
           created_at?: string
-          user_id?: number
+          schedules?: Json | null
           user_name?: string | null
+          user_uuid: string
         }
         Update: {
           created_at?: string
-          user_id?: number
+          schedules?: Json | null
           user_name?: string | null
+          user_uuid?: string
         }
         Relationships: []
       }

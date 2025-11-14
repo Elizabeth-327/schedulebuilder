@@ -16,7 +16,7 @@ export default function ResetPasswordPage() {
 
         try {
             const result = await signIn("credentials", {
-                redirect: false,
+                //redirect: false,
                 email,
                 mode: "resetpassword",
             });
@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
                 toast.error(result.error);
             } else {
                 toast.success("Reset password email sent.");
-                router.push("/auth/signIn");
+                router.push("/auth/signin");
             }
         } catch (err) {
             console.error("Error during password reset: ", err);
@@ -34,4 +34,20 @@ export default function ResetPasswordPage() {
             setIsSubmitting(false);
         }
     }
+    return (
+        <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
+            <form onSubmit={handleReset} className="flex flex-col justify-center items-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10">
+                <h2 className="font-semibold">Enter email</h2>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="border border-gray-300 bg-sky-100 rounded p-2"
+                    required
+                />
+                <button className="text-blue p-2" type="submit">Submit</button>
+            </form>
+        </div>
+    )
 }
