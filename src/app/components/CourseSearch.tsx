@@ -17,27 +17,16 @@ export default function CourseSearch({
 }: CourseSearchProps) {
   // STATE
 
-  const [courses, setCourses] = useState<CourseOffering[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [courses, setCourses] = useState<CourseOffering[]>([]);
+  // const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const resultRef = useRef<HTMLUListElement>(null);
+  const resultRef = useRef<HTMLDivElement | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<CourseOffering | null>(
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(
     null
   );
 
   // LIFECYCLE
-
-  useEffect(() => {
-    // after load
-    const loadCourses = async () => {
-      const courses = await getCourses();
-      setCourses(courses);
-      setLoading(false);
-    };
-
-    loadCourses();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,41 +44,26 @@ export default function CourseSearch({
     };
   }, []);
 
-  if (loading) {
-    return <h2>Loading Courses...</h2>;
-  }
-  if (loading) {
-    return <h2>Loading Courses...</h2>;
-  }
-
-
-  function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const input = event.currentTarget.elements.namedItem(
-      "coursesearch"
-    ) as HTMLInputElement;
-    let query = input.value;
-    query = query.trim(); // process more
-    // do something -- probably add to the schedule UI.
-  }
   const trimmed = query.trim().toLowerCase();
   const filteredCourses = trimmed
-    ? courses.filter((course) => {
+    ? allCourses.filter((course) => {
+		/*
         const num = Number(trimmed);
         if (!Number.isNaN(num)) {
           return course.class_nbr === num || course.course_nbr === num;
         }
+		*/
         return (
-          (course.course_title?.toLowerCase().includes(trimmed) ?? false) ||
-          (course.course?.toLowerCase().includes(trimmed) ?? false)
+          (course.name.toLowerCase().includes(trimmed) ?? false) ||
+          (course.code.toLowerCase().includes(trimmed) ?? false)
         );
       })
     : [];
 
   return (
     <div>
-      <form action="submit" onSubmit={formSubmitHandler}>
-        <div className="relative top-full left-0 w-full inline-block w-80 sm:w-150 ">
+      <form action="submit">
+        <div className="relative top-full left-0 w-full inline-block sm:w-150 ">
           <input
             type="text"
             name="coursesearch"
@@ -109,7 +83,7 @@ export default function CourseSearch({
             >
               <ul role="listbox" aria-label="Course results" className="p-2 ">
                 {filteredCourses.map((course) => (
-                  <li key={course.class_nbr} role="option">
+                  <li key={course.code} role="option">
                     <div
                       className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
                       onClick={() => {
@@ -118,9 +92,9 @@ export default function CourseSearch({
                       }}
                     >
                       <strong>
-                        {course.course} {course.number}
+                        {course.code}
                       </strong>
-                      : {course.course_title} - {course.component}
+                      : {course.name}
                     </div>
                   </li>
                 ))}
@@ -131,7 +105,7 @@ export default function CourseSearch({
       </form>
       {selectedCourse && (
         <CourseInfoPopUp
-          course={selectedCourse}
+          course={selectedCourse.sections[0]} // fix
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
             const CourseCode = `${course.course} ${course.number}`;
