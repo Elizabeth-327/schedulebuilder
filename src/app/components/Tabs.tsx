@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
 import { Plan, Schedule} from "../types/custom";
-import  CourseList  from "../components/CourseList"
 import { useState } from "react";
 
 type TabsProps = {
@@ -10,12 +9,14 @@ type TabsProps = {
     activeSemester: string, // e.g. "Fall 2025"
     activeSchedule: Schedule,
     onAddPlan: (planName: string) => Promise<Plan | null>,
+    onRemovePlan: () => Promise<Plan | null>,
 };
 
-export default function Tabs({ semesters, activeSemester, schedules, activeSchedule, onAddPlan }: TabsProps) {
+export default function Tabs({ semesters, activeSemester, schedules, activeSchedule, onAddPlan, onRemovePlan }: TabsProps) {
     const router = useRouter();
     const [addPlan, setAddPlan] = useState(false); // for plans within a semester
     const [newPlan, setNewPlan] = useState('');
+    const [removePlan, setRemovePlan] = useState(false);
     const schedulesInSemester = schedules.filter(s => s.term === activeSemester);
     const handleSemesterChange = (semester: string) => {
         // Default to first plan of new semester
@@ -38,7 +39,12 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
         }
     };
 
-
+    const handlePlanRemove = async () => {
+        const removePlan = await onRemovePlan();
+        if (removePlan) {
+            setRemovePlan(false);
+        }
+    }
 
     
     return (
@@ -98,8 +104,17 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                         <button key={newPlan} className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">
                             Add Plan
                         </button>
+                        <button className="text-blue-600 hover:text-blue-700 p-2" onClick={() => setAddPlan(false)}>
+                            Cancel
+                        </button>
                     </form>
                 )}
+                <button
+                    onClick={() => handlePlanRemove()}
+                    className={"px-3 py-1 rounded-t text-sm bg-gray-100 hover:bg-gray-200"}
+                >
+                    Delete Plan
+                </button>
             </div>
         </div>
     );

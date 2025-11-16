@@ -8,7 +8,7 @@ import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
 import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
 import { useSession } from "next-auth/react";
-import { addSchedule, updateSchedule } from "../supabaseAccess";
+import { addSchedule, updateSchedule, removeSchedule } from "../supabaseAccess";
 import { SignOutButton } from "../auth/signout/page";
 
 type ScheduleBuilderProps = {
@@ -132,7 +132,7 @@ export default function ScheduleBuilder({
 
   const handleAddPlan = async (planName: string): Promise<Plan | null> => {
     if (!session?.user?.id || !session?.supabase) {
-      alert("Please log in to add a plan.");
+      alert("Log in to add a plan.");
       return null;
     }
     const user_uuid = session.user.id;
@@ -159,6 +159,20 @@ export default function ScheduleBuilder({
     }
   };
 
+  const handleRemovePlan = async () => {
+    if (!session?.user?.id || !session?.supabase) {
+        alert("Log in to delete a plan");
+        return null;
+    }
+    const user_uuid = session.user.id;
+    const tokens = session.supabase;
+    const success = await removeSchedule(tokens, user_uuid, activeSchedule.name);
+    if (success) {
+        alert("Plan successfully removed");
+        return null;
+    }
+  };
+
   return (
     <div className="text-black">
       <Tabs
@@ -168,6 +182,7 @@ export default function ScheduleBuilder({
         schedules={schedules}
         activeSchedule={currentSchedule || schedulesInSemester[0] || []}
         onAddPlan={handleAddPlan}
+        onRemovePlan={handleRemovePlan}
       />
       <CourseSearch
         allCourses={allCourses}
