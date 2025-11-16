@@ -1,5 +1,7 @@
 import { useRouter } from "next/navigation";
-import { Plan, Schedule } from "../types/custom";
+import { Plan, Schedule} from "../types/custom";
+import  CourseList  from "../components/CourseList"
+import { useState } from "react";
 
 type TabsProps = {
     semesters: string[], // e.g. ["Fall 2025", "Spring 2025", etc.]
@@ -7,10 +9,13 @@ type TabsProps = {
     schedules: Schedule[],
     activeSemester: string, // e.g. "Fall 2025"
     activeSchedule: Schedule,
+    onAddPlan: (planName: string) => Promise<Plan | null>,
 };
 
-export default function Tabs({ semesters, activeSemester, schedules, activeSchedule }: TabsProps) {
+export default function Tabs({ semesters, activeSemester, schedules, activeSchedule, onAddPlan }: TabsProps) {
     const router = useRouter();
+    const [addPlan, setAddPlan] = useState(false); // for plans within a semester
+    const [newPlan, setNewPlan] = useState('');
     const schedulesInSemester = schedules.filter(s => s.term === activeSemester);
     const handleSemesterChange = (semester: string) => {
         // Default to first plan of new semester
@@ -22,6 +27,20 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
     const handlePlanChange = (plan: Plan) => {
         router.replace(`/schedule?semester=${encodeURIComponent(activeSemester)}&plan=${encodeURIComponent(plan.name)}`);
     };
+
+    // save name for new schedule
+    const handleAddPlan = async (planName: string) => {
+        const newPlan = await onAddPlan(planName);
+        if (newPlan) {
+            handlePlanChange(newPlan);
+            setAddPlan(false);
+            setNewPlan('');
+        }
+    };
+
+
+
+    
     return (
         <div className="flex flex-col gap-2">
             {/* Semester Tabs */}
@@ -61,6 +80,26 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                         </button>
                     );
                 })}
+                <button
+                    onClick={() => setAddPlan(true)}
+                    className={`px-3 py-1 rounded-t text-sm bg-gray-100 hover:bg-gray-200`}
+                >
+                    +
+                </button>
+                {addPlan && (
+                    <form onSubmit={(e) => { e.preventDefault(); handleAddPlan(newPlan); }}>
+                        <input
+                            placeholder="New Plan Name"
+                            value={newPlan}
+                            onChange={(e) => setNewPlan(e.target.value)}
+                            className="border border-gray-300 bg-sky-100 rounded p-2"
+                            required
+                        />
+                        <button key={newPlan} className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">
+                            Add Plan
+                        </button>
+                    </form>
+                )}
             </div>
         </div>
     );

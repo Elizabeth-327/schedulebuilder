@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction, useMemo } from "react";
-import { Course, CourseOffering, Schedule } from "../types/custom";
+import { Course, CourseOffering, Schedule, Plan } from "../types/custom";
 import Tabs from "./Tabs";
 // import WeeklyScheduleGrid from "../components/WeeklyScheduleGrid";
 import CourseSearch from "../components/CourseSearch";
@@ -18,6 +18,8 @@ type ScheduleBuilderProps = {
   currentSemester: string;
   currentSchedule: Schedule;
   setSchedules: Dispatch<SetStateAction<Schedule[]>>;
+  userId?: string;
+  tokens?: any;
 };
 
 export default function ScheduleBuilder({
@@ -27,6 +29,8 @@ export default function ScheduleBuilder({
   currentSemester,
   currentSchedule,
   setSchedules,
+  userId,
+  tokens,
 }: ScheduleBuilderProps) {
   const [activeSemester, setActiveSemester] = useState(currentSemester);
   const [activeSchedule, setActiveSchedule] = useState(currentSchedule);
@@ -126,14 +130,44 @@ export default function ScheduleBuilder({
     }
   };
 
+  const handleAddPlan = async (planName: string): Promise<Plan | null> => {
+    if (!session?.user?.id || !session?.supabase) {
+      alert("Please log in to add a plan.");
+      return null;
+    }
+    const user_uuid = session.user.id;
+    const tokens = session.supabase;
+
+    const newPlan: Plan = {
+      name: planName,
+      term: activeSemester,
+      courses: [],
+    };
+
+    const newSchedule: Schedule = {
+      ...newPlan,
+      sections: [],
+    };
+
+    const success = await addSchedule(tokens, user_uuid, newSchedule);
+    if (success) {
+      setSchedules([...schedules, newSchedule]);
+      return newPlan;
+    } else {
+      alert("Failed to add plan. It may already exist.");
+      return null;
+    }
+  };
+
   return (
-    <div>
+    <div className="text-black">
       <Tabs
         semesters={semesters}
         activeSemester={activeSemester}
         //schedulesInSemester={schedulesInSemester}
         schedules={schedules}
         activeSchedule={currentSchedule || schedulesInSemester[0] || []}
+        onAddPlan={handleAddPlan}
       />
       <CourseSearch
         allCourses={allCourses}
