@@ -1,5 +1,5 @@
 "use client";
-import Popup from "./Popup";
+import PopUp from "./PopUp";
 import { CourseOffering } from "../types/custom";
 import { on } from "events";
 
@@ -15,7 +15,7 @@ export default function CourseInfoPopUp({
   onAddtoSchedule,
 }: CourseInfoPopUpProps) {
   return (
-    <Popup title={course.course_title || "Course Info"} onClose={onClose}>
+    <PopUp title={course.course_title || "Course Info"} onClose={onClose}>
       <div className="space-y-4">
         <p>
           <strong>Class Number:</strong> {course.class_nbr}
@@ -72,6 +72,6 @@ export default function CourseInfoPopUp({
           </div>
         )}
       </div>
-    </Popup>
+    </PopUp>
   );
 }

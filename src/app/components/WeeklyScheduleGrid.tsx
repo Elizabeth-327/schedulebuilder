@@ -144,9 +144,9 @@ export default function WeeklyScheduleGrid({
 
   // Function to generate all combinations of lecture + lab + discussion
   const getSectionCombinations = (course: Course) => {
-    const lectures = course.lectureSections || [null]; // array of Sections
-    const labs = course.labSections || [null]; // array of Sections or array with one null element
-    const discussions = course.discussionSections || [null];
+    const lectures = course.lectureSections.length > 0 ? course.lectureSections : [null]; // array of Sections
+    const labs = course.labSections.length > 0 ? course.lectureSections : [null]; // array of Sections or array with one null element
+    const discussions = course.discussionSections.length > 0 ? course.discussionSections : [null]; // array of Sections or array with one null element
 
     if (!(lectures || labs || discussions)) {
       throw new Error(
