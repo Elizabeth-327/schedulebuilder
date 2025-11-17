@@ -9,7 +9,7 @@ type TabsProps = {
     activeSemester: string, // e.g. "Fall 2025"
     activeSchedule: Schedule,
     onAddPlan: (planName: string) => Promise<Plan | null>,
-    onRemovePlan: () => Promise<Plan | null>,
+    onRemovePlan: () => Promise<boolean>,
 };
 
 export default function Tabs({ semesters, activeSemester, schedules, activeSchedule, onAddPlan, onRemovePlan }: TabsProps) {
