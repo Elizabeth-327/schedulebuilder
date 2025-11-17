@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Course, CourseOffering, Schedule } from "../types/custom";
 import CourseList from "./CourseList";
+import CourseOfferingsList from "./CourseOfferingList";
 interface WeeklyScheduleGridProps {
   allCourses: Course[];
   schedulesInSemester: Schedule[];
@@ -27,6 +28,7 @@ type ScheduledCourse = {
   conflict: boolean;
   color?: string;
   type: "LEC" | "LBN" | "DIS" | "OTHER";
+  offering: CourseOffering;
 };
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -139,16 +141,38 @@ export default function WeeklyScheduleGrid({
       times: allTimes,
       conflict: false,
       type: offering.component as "LEC" | "LBN" | "DIS" | "OTHER",
+      offering: offering,
     } as ScheduledCourse;
   };
 
   // Function to generate all combinations of lecture + lab + discussion
   const getSectionCombinations = (course: Course) => {
-    const lectures = (course.lectureSections.filter(section => section.semester == currentSemester)).length > 0 ? course.lectureSections.filter(section => section.semester == currentSemester) : [null]; // array of Sections;
+    const lectures =
+      course.lectureSections.filter(
+        (section) => section.semester == currentSemester
+      ).length > 0
+        ? course.lectureSections.filter(
+            (section) => section.semester == currentSemester
+          )
+        : [null]; // array of Sections;
     console.log("Lectures for course", course.code, lectures);
-    const labs = (course.labSections.filter(section => section.semester == currentSemester)).length > 0 ? course.labSections.filter(section => section.semester == currentSemester) : [null]; // array of Sections or array with one null element
+    const labs =
+      course.labSections.filter(
+        (section) => section.semester == currentSemester
+      ).length > 0
+        ? course.labSections.filter(
+            (section) => section.semester == currentSemester
+          )
+        : [null]; // array of Sections or array with one null element
     console.log("Labs for course", course.code, labs);
-    const discussions = (course.discussionSections.filter(section => section.semester == currentSemester)).length > 0 ? course.discussionSections.filter(section => section.semester == currentSemester) : [null]; // array of Sections or array with one null element
+    const discussions =
+      course.discussionSections.filter(
+        (section) => section.semester == currentSemester
+      ).length > 0
+        ? course.discussionSections.filter(
+            (section) => section.semester == currentSemester
+          )
+        : [null]; // array of Sections or array with one null element
     console.log("Discussions for course", course.code, discussions);
 
     if (!(lectures || labs || discussions)) {
@@ -261,34 +285,55 @@ export default function WeeklyScheduleGrid({
     setScheduleOptions(schedulesAfterConflictCheck);
     setSelectedScheduleIndex(0);
   }, [allCourses, schedulesInSemester, currentSemester, currentSchedule]);
+  const getSelectedOfferings = (): CourseOffering[] => {
+    const selectedSchedule = scheduleOptions[selectedScheduleIndex];
+    if (!selectedSchedule) return [];
+    return selectedSchedule.map((sc) => sc.offering);
+  };
+
+  const SelectedOfferings = getSelectedOfferings();
 
   return (
     <div className="flex items-start gap-2 w-full">
       {/* Navigation bar */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() =>
-            setSelectedScheduleIndex((prev) => Math.max(prev - 1, 0))
-          }
-          disabled={selectedScheduleIndex === 0}
-          className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
-        >
-          ◀
-        </button>
-        <span>
-          Schedule {selectedScheduleIndex + 1} of {scheduleOptions.length}
-        </span>
-        <button
-          onClick={() =>
-            setSelectedScheduleIndex((prev) =>
-              Math.min(prev + 1, scheduleOptions.length - 1)
-            )
-          }
-          disabled={selectedScheduleIndex === scheduleOptions.length - 1}
-          className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
-        >
-          ▶
-        </button>
+
+      <div className=" flex-col gap-2 mr-4">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() =>
+              setSelectedScheduleIndex((prev) => Math.max(prev - 1, 0))
+            }
+            disabled={selectedScheduleIndex === 0}
+            className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+          >
+            ◀
+          </button>
+          <span>
+            Schedule {selectedScheduleIndex + 1} of {scheduleOptions.length}
+          </span>
+          <button
+            onClick={() =>
+              setSelectedScheduleIndex((prev) =>
+                Math.min(prev + 1, scheduleOptions.length - 1)
+              )
+            }
+            disabled={selectedScheduleIndex === scheduleOptions.length - 1}
+            className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+          >
+            ▶
+          </button>
+          <button
+            onClick={() => {
+              // TODO: refactor to use save ???
+              console.log("Save button clicked - not yet implemented");
+            }}
+            disabled={scheduleOptions.length === 0}
+            className="px-1 py-0.5 text-white bg-blue-600 rounded hover:bg-blue-700 whitespace-nowrap "
+          >
+            Save Schedule
+          </button>
+        </div>
+        <CourseOfferingsList courses={getSelectedOfferings()} />
       </div>
       <div className="flex-1 min-w-[300px] ">
         <CourseList

@@ -162,15 +162,19 @@ export default function ScheduleBuilder({
   /** True on success */
   const handleRemovePlan = async () => {
     if (!session?.user?.id || !session?.supabase) {
-        alert("Log in to delete a plan");
-        return false;
+      alert("Log in to delete a plan");
+      return false;
     }
     const user_uuid = session.user.id;
     const tokens = session.supabase;
-    const success = await removeSchedule(tokens, user_uuid, activeSchedule.name);
+    const success = await removeSchedule(
+      tokens,
+      user_uuid,
+      activeSchedule.name
+    );
     if (success) {
-        alert("Plan successfully removed");
-        return true;
+      alert("Plan successfully removed");
+      return true;
     }
     return false;
   };
@@ -200,7 +204,7 @@ export default function ScheduleBuilder({
           allCourses={allCourses}
           schedulesInSemester={schedulesInSemester}
           currentSemester={activeSemester}
-          currentSchedule={currentSchedule || schedulesInSemester[0] || []}
+          currentSchedule={activeSchedule || schedulesInSemester[0] || []}
           onRemoveCourse={removeFromSchedule}
         />
       }
