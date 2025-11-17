@@ -1,8 +1,8 @@
 "use client";
-import { Course } from "../types/custom";
+import { Course, CourseOffering } from "../types/custom";
 
 interface CourseListProps {
-  courses: Course[];
+  courses: CourseOffering[];
   onRemoveCourse: (courseCode: string) => void;
 }
 export default function CourseList({

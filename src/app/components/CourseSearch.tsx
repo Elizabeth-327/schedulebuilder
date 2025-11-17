@@ -9,11 +9,13 @@ import { Course, Schedule } from "../types/custom";
 interface CourseSearchProps {
   allCourses: Course[];
   onScheduleUpdate?: (course: Course) => void;
+  currentSemester: string;
 }
 
 export default function CourseSearch({
   allCourses,
   onScheduleUpdate,
+  currentSemester,
 }: CourseSearchProps) {
   // STATE
 
@@ -46,7 +48,7 @@ export default function CourseSearch({
 
   const trimmed = query.trim().toLowerCase();
   const filteredCourses = trimmed
-    ? allCourses.filter((course) => {
+    ? allCourses.filter(c => c.sections.some(s => s.semester === currentSemester)).filter((course) => {
 		/*
         const num = Number(trimmed);
         if (!Number.isNaN(num)) {

@@ -67,11 +67,16 @@ export class Course {
   }
 }
 
-export function mapSectionToCourse(section: CourseOffering, allCourses: Course[]) {
-    const mapped = allCourses.find(c => c.code === `${section.course} ${section.number}`);
-    if (mapped) {
-        return mapped;
-    }
-    // else 
-    return null;
+export function mapSectionToCourse(
+  section: CourseOffering,
+  allCourses: Course[]
+) {
+  const mapped = allCourses.find(
+    (c) => c.code === `${section.course} ${section.number}`
+  );
+  if (mapped) {
+    return mapped;
+  }
+  // else
+  return null;
 }
