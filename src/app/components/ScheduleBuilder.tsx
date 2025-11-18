@@ -8,7 +8,7 @@ import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
 import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
 import { useSession } from "next-auth/react";
-import { addSchedule, updateSchedule, removeSchedule } from "../supabaseAccess";
+import { addSchedule, updateSchedule, removeSchedule, getSchedules } from "../supabaseAccess";
 import { SignOutButton } from "../auth/signout/page";
 
 type ScheduleBuilderProps = {
@@ -173,10 +173,28 @@ export default function ScheduleBuilder({
       activeSchedule.name
     );
     if (success) {
-      alert("Plan successfully removed");
-      return true;
+      // Fetch updated schedules and update local state
+      const updatedSchedules = await getSchedules(tokens, user_uuid);
+      if (updatedSchedules) {
+        setSchedules(updatedSchedules);
+        // Update activeSchedule to the first remaining plan in the semester
+        const updatedSchedulesInSemester = updatedSchedules.filter(s => s.term === activeSemester);
+        if (updatedSchedulesInSemester.length > 0) {
+          setActiveSchedule(updatedSchedulesInSemester[0]);
+        } else {
+          // Handle case where no plans left, perhaps set to null or default
+          setActiveSchedule(null as any); // or handle appropriately
+        }
+        alert("Plan successfully removed");
+        return true;
+      } else {
+        alert("Failed to refresh schedules after deletion.");
+        return false;
+      }
+    } else {
+      alert("Failed to delete plan.");
+      return false;
     }
-    return false;
   };
 
   return (

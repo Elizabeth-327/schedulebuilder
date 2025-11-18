@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { Plan, Schedule} from "../types/custom";
+import { Plan, Schedule } from "../types/custom";
 import { useState } from "react";
 
 type TabsProps = {
@@ -40,8 +40,9 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
     };
 
     const handlePlanRemove = async () => {
-        const removePlan = await onRemovePlan();
-        if (removePlan) {
+        setRemovePlan(true);
+        const remove = await onRemovePlan();
+        if (remove) {
             setRemovePlan(false);
         }
     }
@@ -98,7 +99,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                             placeholder="New Plan Name"
                             value={newPlan}
                             onChange={(e) => setNewPlan(e.target.value)}
-                            className="border border-gray-300 bg-sky-100 rounded p-2"
+                            className="border border-gray-300 bg-sky-100 rounded mr-1 p-2"
                             required
                         />
                         <button key={newPlan} className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">
@@ -110,8 +111,8 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                     </form>
                 )}
                 <button
-                    onClick={() => handlePlanRemove()}
-                    className={"px-3 py-1 rounded-t text-sm bg-gray-100 hover:bg-gray-200"}
+                    onClick={(e) => { e.preventDefault(); handlePlanRemove(); }}
+                    className={"px-3 py-1 rounded text-sm bg-gray-100 hover:bg-gray-200"}
                 >
                     Delete Plan
                 </button>
