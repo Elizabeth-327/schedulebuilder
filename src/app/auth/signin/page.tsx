@@ -59,9 +59,10 @@ export default function SignInPage() {
                     required
                 />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button className="text-blue-600 p-2" onClick={() => router.push('/auth/reset')}>Forget Password?</button>
                 <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
-            </form>            
+                <button className="text-blue-600 p-2" onClick={() => router.push('/auth/reset')}>Forget Password?</button>
+            </form>
+            
         </div>
 
     );
