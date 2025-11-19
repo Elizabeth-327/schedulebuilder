@@ -107,7 +107,13 @@ export default function CourseSearch({
       </form>
       {selectedCourse && (
         <CourseInfoPopUp
-          course={selectedCourse.sections[0]} // fix
+          //course={selectedCourse.sections[0]} // fix
+          // Elizabeth's fix
+          course={
+            selectedCourse.lectureSections.filter(s => s.semester == currentSemester).length > 0 // if a lecture section exists for the current semester 
+              ? selectedCourse.lectureSections.filter(s => s.semester == currentSemester)[0] // show the first occurring lecture section info for the current semester
+              : selectedCourse.sections.filter(s => s.semester == currentSemester)[0] // else show the first occurring section for the current semester
+          }
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
             const CourseCode = `${course.course} ${course.number}`;
