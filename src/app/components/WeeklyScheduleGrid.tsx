@@ -144,9 +144,9 @@ export default function WeeklyScheduleGrid({
 
   // Function to generate all combinations of lecture + lab + discussion
   const getSectionCombinations = (course: Course) => {
-    const lectures = course.lectureSections || [null]; // array of Sections
-    const labs = course.labSections || [null]; // array of Sections or array with one null element
-    const discussions = course.discussionSections || [null];
+    const lectures = course.lectureSections.length > 0 ? course.lectureSections : [null]; // array of Sections
+    const labs = course.labSections.length > 0 ? course.lectureSections : [null]; // array of Sections or array with one null element
+    const discussions = course.discussionSections.length > 0 ? course.discussionSections : [null]; // array of Sections or array with one null element
 
     if (!(lectures || labs || discussions)) {
       throw new Error(
@@ -253,6 +253,15 @@ export default function WeeklyScheduleGrid({
       markConflicts(scheduleCopy);
       assignColorsToSchedule(scheduleCopy);
       return scheduleCopy;
+    });
+
+    // filter all of the schedules to remove conflicting schedules
+    schedulesAfterConflictCheck = schedulesAfterConflictCheck.filter((schedule) =>{
+      // go into each schedule to check if there's any schedule conflicts
+      if (schedule.filter((potentialSchedule) => potentialSchedule.conflict === true).length !== 0) {
+        // if not empty, kill that thang.
+        // probably can have this in the original schedulesafterconflictcheck
+      };
     });
 
     setScheduleOptions(schedulesAfterConflictCheck);
