@@ -8,7 +8,7 @@ import SavedConfigs from "./SavedConfigs";
 import { SessionProvider } from "next-auth/react";
 import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
 import { useSession } from "next-auth/react";
-import { addSchedule, updateSchedule, removeSchedule } from "../supabaseAccess";
+import { addSchedule, updateSchedule, removeSchedule, getSchedules } from "../supabaseAccess";
 import { SignOutButton } from "../auth/signout/page";
 
 type ScheduleBuilderProps = {
@@ -162,18 +162,58 @@ export default function ScheduleBuilder({
   /** True on success */
   const handleRemovePlan = async () => {
     if (!session?.user?.id || !session?.supabase) {
-        alert("Log in to delete a plan");
+      alert("Log in to delete a plan");
+      return false;
+    }
+    const user_uuid = session.user.id;
+    const tokens = session.supabase;
+    const success = await removeSchedule(
+      tokens,
+      user_uuid,
+      activeSchedule.name
+    );
+    if (success) {
+      // Fetch updated schedules and update local state
+      const updatedSchedules = await getSchedules(tokens, user_uuid);
+      if (updatedSchedules) {
+        setSchedules(updatedSchedules);
+        // Update activeSchedule to the first remaining plan in the semester
+        const updatedSchedulesInSemester = updatedSchedules.filter(s => s.term === activeSemester);
+        if (updatedSchedulesInSemester.length > 0) {
+          setActiveSchedule(updatedSchedulesInSemester[0]);
+        } else {
+          // Handle case where no plans left, perhaps set to null or default
+          setActiveSchedule(null as any); // or handle appropriately
+        }
+        alert("Plan successfully removed");
+        return true;
+      } else {
+        alert("Failed to refresh schedules after deletion.");
+        return false;
+      }
+    } else {
+      alert("Failed to delete plan.");
+      return false;
+    }
+  };
+
+  const handleRenamePlan = async () => {
+    if(!session?.user?.id || !session?.supabase) {
+        alert("Log in to rename a plan");
         return false;
     }
     const user_uuid = session.user.id;
     const tokens = session.supabase;
-    const success = await removeSchedule(tokens, user_uuid, activeSchedule.name);
+    const success = await updateSchedule(tokens, user_uuid, activeSchedule);
     if (success) {
-        alert("Plan successfully removed");
+        alert("Plan successfully renamed");
         return true;
+    } else {
+        alert("Failed to delete plan");
+        return false;
     }
-    return false;
-  };
+    
+  }
 
   return (
     <div className="text-black">
@@ -185,22 +225,24 @@ export default function ScheduleBuilder({
         activeSchedule={currentSchedule || schedulesInSemester[0] || []}
         onAddPlan={handleAddPlan}
         onRemovePlan={handleRemovePlan}
+        onRenamePlan={handleRenamePlan}
       />
       <CourseSearch
         allCourses={allCourses}
         onScheduleUpdate={addCourseToSchedule}
         currentSemester={activeSemester}
       />
+      <SignOutButton />
       <SessionProvider>
         <SavedConfigs />
       </SessionProvider>
-      <SignOutButton />
+      
       {
         <WeeklyScheduleGrid
           allCourses={allCourses}
           schedulesInSemester={schedulesInSemester}
           currentSemester={activeSemester}
-          currentSchedule={currentSchedule || schedulesInSemester[0] || []}
+          currentSchedule={activeSchedule || schedulesInSemester[0] || []}
           onRemoveCourse={removeFromSchedule}
         />
       }

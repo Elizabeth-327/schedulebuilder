@@ -31,7 +31,7 @@ export default function SavedConfigs() {
 
     return (
         <>
-            <h1>Logged in as: {session?.user?.email || "None"}</h1>
+            <h1 className="bottom-2 left-2">Logged in as: {session?.user?.email || "None"}</h1>
             <section id="savedSchedulesSelector">
                 <select name="savedSchedules" size={savedSchedules.length}>
                     {savedSchedules.map(sch => <option value={sch.name}>{sch.name}</option>)}

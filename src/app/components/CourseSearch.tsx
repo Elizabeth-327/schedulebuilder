@@ -70,7 +70,7 @@ export default function CourseSearch({
             type="text"
             name="coursesearch"
             id="coursesearch"
-            className="border"
+            className="border border-gray-300 bg-sky-100 rounded py-1 px-2"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -87,7 +87,7 @@ export default function CourseSearch({
                 {filteredCourses.map((course) => (
                   <li key={course.code} role="option">
                     <div
-                      className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
+                      className="rounded border p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
                       onClick={() => {
                         setSelectedCourse(course);
                         setIsSearchOpen(false);
@@ -107,7 +107,13 @@ export default function CourseSearch({
       </form>
       {selectedCourse && (
         <CourseInfoPopUp
-          course={selectedCourse.sections[0]} // fix
+          //course={selectedCourse.sections[0]} // fix
+          // Elizabeth's fix
+          course={
+            selectedCourse.lectureSections.filter(s => s.semester == currentSemester).length > 0 // if a lecture section exists for the current semester 
+              ? selectedCourse.lectureSections.filter(s => s.semester == currentSemester)[0] // show the first occurring lecture section info for the current semester
+              : selectedCourse.sections.filter(s => s.semester == currentSemester)[0] // else show the first occurring section for the current semester
+          }
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
             const CourseCode = `${course.course} ${course.number}`;

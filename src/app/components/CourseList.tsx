@@ -2,7 +2,7 @@
 import { Course, CourseOffering } from "../types/custom";
 
 interface CourseListProps {
-  courses: CourseOffering[];
+  courses: Course[]; // changed from CourseOffering[] to Course[]
   onRemoveCourse: (courseCode: string) => void;
 }
 export default function CourseList({

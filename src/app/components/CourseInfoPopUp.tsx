@@ -3,17 +3,17 @@ import Popup from "./Popup";
 import { CourseOffering } from "../types/custom";
 import { on } from "events";
 
-interface CourseInfoPopUpProps {
+interface CourseInfoPopupProps {
   course: CourseOffering;
   onClose: () => void;
   onAddtoSchedule: (course: CourseOffering) => void;
 }
 
-export default function CourseInfoPopUp({
+export default function CourseInfoPopup({
   course,
   onClose,
   onAddtoSchedule,
-}: CourseInfoPopUpProps) {
+}: CourseInfoPopupProps) {
   return (
     <Popup title={course.course_title || "Course Info"} onClose={onClose}>
       <div className="space-y-4">

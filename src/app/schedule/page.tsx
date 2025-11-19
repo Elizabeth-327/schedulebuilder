@@ -151,7 +151,7 @@ function PageInner() {
   if (schedules.length === 0) {
     return (
       <main className="p-4">
-        <div>Loading your schedule...</div>
+        <div className="text-black text-4xl font-bold items-center justify-center">Loading your schedule...</div>
       </main>
     );
   }
@@ -173,7 +173,7 @@ function PageInner() {
 export default function Page() {
   return (
     <>
-      <Suspense fallback={<div>Loading schedule...</div>}>
+      <Suspense fallback={<div className="text-black text-4xl font-bold items-center justify-center">Loading schedule...</div>}>
         <SessionProvider>
           <PageInner />
         </SessionProvider>
