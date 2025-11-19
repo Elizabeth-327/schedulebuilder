@@ -250,19 +250,20 @@ export default function WeeklyScheduleGrid({
 
     const schedulesAfterConflictCheck = allSchedules.map((schedule) => {
       const scheduleCopy = [...schedule];
-      markConflicts(scheduleCopy);
-      assignColorsToSchedule(scheduleCopy);
-      return scheduleCopy;
+      markConflicts(scheduleCopy).length === 0 ? 
+        assignColorsToSchedule(scheduleCopy)
+        return scheduleCopy
+      : return;
     });
 
-    // filter all of the schedules to remove conflicting schedules
-    schedulesAfterConflictCheck = schedulesAfterConflictCheck.filter((schedule) =>{
-      // go into each schedule to check if there's any schedule conflicts
-      if (schedule.filter((potentialSchedule) => potentialSchedule.conflict === true).length !== 0) {
-        // if not empty, kill that thang.
-        // probably can have this in the original schedulesafterconflictcheck
-      };
-    });
+    // // filter all of the schedules to remove conflicting schedules
+    // schedulesAfterConflictCheck = schedulesAfterConflictCheck.filter((schedule) =>{
+    //   // go into each schedule to check if there's any schedule conflicts
+    //   if (schedule.filter((potentialSchedule) => potentialSchedule.conflict === true).length !== 0) {
+    //     // if not empty, kill that thang.
+    //     // probably can have this in the original schedulesafterconflictcheck
+    //   };
+    // });
 
     setScheduleOptions(schedulesAfterConflictCheck);
     setSelectedScheduleIndex(0);
