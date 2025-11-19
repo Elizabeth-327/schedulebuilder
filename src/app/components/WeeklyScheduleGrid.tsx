@@ -277,10 +277,9 @@ export default function WeeklyScheduleGrid({
 
     const schedulesAfterConflictCheck = allSchedules.map((schedule) => {
       const scheduleCopy = [...schedule];
-      markConflicts(scheduleCopy).length === 0 ? 
-        assignColorsToSchedule(scheduleCopy)
-        return scheduleCopy
-      : return;
+      markConflicts(scheduleCopy).length
+      assignColorsToSchedule(scheduleCopy)
+      return scheduleCopy
     });
 
     // // filter all of the schedules to remove conflicting schedules
