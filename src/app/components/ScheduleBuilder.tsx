@@ -197,6 +197,24 @@ export default function ScheduleBuilder({
     }
   };
 
+  const handleRenamePlan = async () => {
+    if(!session?.user?.id || !session?.supabase) {
+        alert("Log in to rename a plan");
+        return false;
+    }
+    const user_uuid = session.user.id;
+    const tokens = session.supabase;
+    const success = await updateSchedule(tokens, user_uuid, activeSchedule);
+    if (success) {
+        alert("Plan successfully renamed");
+        return true;
+    } else {
+        alert("Failed to delete plan");
+        return false;
+    }
+    
+  }
+
   return (
     <div className="text-black">
       <Tabs
@@ -207,6 +225,7 @@ export default function ScheduleBuilder({
         activeSchedule={currentSchedule || schedulesInSemester[0] || []}
         onAddPlan={handleAddPlan}
         onRemovePlan={handleRemovePlan}
+        onRenamePlan={handleRenamePlan}
       />
       <CourseSearch
         allCourses={allCourses}

@@ -10,13 +10,16 @@ type TabsProps = {
     activeSchedule: Schedule,
     onAddPlan: (planName: string) => Promise<Plan | null>,
     onRemovePlan: () => Promise<boolean>,
+    onRenamePlan: () => Promise<boolean>,
 };
 
-export default function Tabs({ semesters, activeSemester, schedules, activeSchedule, onAddPlan, onRemovePlan }: TabsProps) {
+export default function Tabs({ semesters, activeSemester, schedules, activeSchedule, onAddPlan, onRemovePlan, onRenamePlan }: TabsProps) {
     const router = useRouter();
     const [addPlan, setAddPlan] = useState(false); // for plans within a semester
     const [newPlan, setNewPlan] = useState('');
-    const [removePlan, setRemovePlan] = useState(false);
+    //const [removePlan, setRemovePlan] = useState(false);
+    const [renamePlan, setRenamePlan] = useState(false);
+    const [newPlanName, setNewPlanName] = useState('');
     const schedulesInSemester = schedules.filter(s => s.term === activeSemester);
     const handleSemesterChange = (semester: string) => {
         // Default to first plan of new semester
@@ -38,16 +41,19 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
             setNewPlan('');
         }
     };
-
+    // delete plan
     const handlePlanRemove = async () => {
-        setRemovePlan(true);
         const remove = await onRemovePlan();
-        if (remove) {
-            setRemovePlan(false);
-        }
     }
 
-    
+    // rename plan
+    const handleRenamePlan = async (newPlanName: string) => {
+        const rename = await onRenamePlan();
+        activeSchedule.name = newPlanName;
+        setNewPlanName('');
+        setRenamePlan(false);
+    }
+
     return (
         <div className="flex flex-col gap-2">
             {/* Semester Tabs */}
@@ -96,7 +102,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                 {addPlan && (
                     <form onSubmit={(e) => { e.preventDefault(); handleAddPlan(newPlan); }}>
                         <input
-                            placeholder="New Plan Name"
+                            placeholder="Plan Name"
                             value={newPlan}
                             onChange={(e) => setNewPlan(e.target.value)}
                             className="border border-gray-300 bg-sky-100 rounded mr-1 p-2"
@@ -107,6 +113,23 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                         </button>
                         <button className="text-blue-600 hover:text-blue-700 p-2" onClick={() => setAddPlan(false)}>
                             Cancel
+                        </button>
+                    </form>
+                )}
+                <button key={newPlanName} onClick={() => setRenamePlan(true)} className={"px-3 py-1 text-sm text-blue-600 hover:text-blue-700"}>
+                    Rename Plan
+                </button>
+                {renamePlan && (
+                    <form onSubmit={(e) => { e.preventDefault(); handleRenamePlan(newPlanName)}}>
+                        <input
+                            placeholder="New plan name"
+                            value={newPlanName}
+                            onChange={(e) => setNewPlanName(e.target.value)}
+                            className="border border-gray-300 bg-sky-100 rounded mr-1 p-2"
+                            required
+                        />
+                        <button key={newPlanName} className="text-white bg-blue-600 rounded shadow-lg hover:text-blue-700 p-2" type="submit">
+                            Submit
                         </button>
                     </form>
                 )}
