@@ -39,29 +39,32 @@ export default function SignUpPage() {
     };
 
     return(
-        <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
-            <form className="flex flex-col items-center justify-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10" onSubmit={handleSubmit}>
-                <h2 className="font-semibold">Create Account</h2>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange = {(e) => setEmail(e.target.value)}
-                    className="border border-gray-300 bg-sky-100 rounded p-2"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange = {(e) => setPassword(e.target.value)}
-                    className="border border-gray-300 bg-sky-100 rounded p-2"
-                    required
-                />
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
-            </form>            
+        <div className="bg-yellow-50">
+            <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
+                <form className="flex flex-col items-center justify-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10" onSubmit={handleSubmit}>
+                    <h2 className="font-semibold">Create Account</h2>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange = {(e) => setEmail(e.target.value)}
+                        className="border border-gray-300 bg-sky-100 rounded p-2"
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange = {(e) => setPassword(e.target.value)}
+                        className="border border-gray-300 bg-sky-100 rounded p-2"
+                        required
+                    />
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
+                </form>            
+            </div>            
         </div>
+
 
     );
 }
