@@ -232,10 +232,11 @@ export default function ScheduleBuilder({
         onScheduleUpdate={addCourseToSchedule}
         currentSemester={activeSemester}
       />
+      <SignOutButton />
       <SessionProvider>
         <SavedConfigs />
       </SessionProvider>
-      <SignOutButton />
+      
       {
         <WeeklyScheduleGrid
           allCourses={allCourses}

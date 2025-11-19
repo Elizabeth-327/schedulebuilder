@@ -64,7 +64,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                         <button
                             key={semester}
                             onClick={() => handleSemesterChange(semester)}
-                            className={`px-4 py-2 rounded-t font-medium transition-colors ${
+                            className={`px-4 py-2 rounded font-medium transition-colors ${
                                 isActive ? "bg-cyan-400 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             }`}
                         >
@@ -73,7 +73,6 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                     );
                 })}
             </div>
-
             {/* Plan Tabs */}
             {/*<div className="flex gap-2">*/}
             <div className="flex space-x-1 mb-2">
@@ -83,7 +82,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                         <button
                             key={semesterSchedule.name}
                             onClick={() => handlePlanChange(semesterSchedule)}
-                            className={`px-3 py-1 rounded-t text-sm ${
+                            className={`px-3 py-1 rounded text-sm ${
                                 isActivePlan
                                 ? "bg-emerald-400 text-white"
                                 : "bg-gray-100 hover:bg-gray-200"
@@ -95,7 +94,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                 })}
                 <button
                     onClick={() => setAddPlan(true)}
-                    className={`px-3 py-1 rounded-t text-sm bg-gray-100 hover:bg-gray-200`}
+                    className={`px-3 py-1 rounded text-sm bg-gray-100 hover:bg-gray-200`}
                 >
                     +
                 </button>
@@ -139,7 +138,9 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                 >
                     Delete Plan
                 </button>
+                <hr className="h-px bg-gray-200 border-0" />
             </div>
+            
         </div>
     );
 }

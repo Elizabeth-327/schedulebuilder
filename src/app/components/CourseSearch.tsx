@@ -70,7 +70,7 @@ export default function CourseSearch({
             type="text"
             name="coursesearch"
             id="coursesearch"
-            className="border"
+            className="border border-gray-300 bg-sky-100 rounded py-1 px-2"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -87,7 +87,7 @@ export default function CourseSearch({
                 {filteredCourses.map((course) => (
                   <li key={course.code} role="option">
                     <div
-                      className="rounded border  p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
+                      className="rounded border p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
                       onClick={() => {
                         setSelectedCourse(course);
                         setIsSearchOpen(false);
