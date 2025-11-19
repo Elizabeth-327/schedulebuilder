@@ -1,5 +1,10 @@
-/*
- * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-password-reset-recovery-part-3-of-3-0859f89a9ad1
+/* 
+ * Author: Janna Dungao
+ * Date: 
+ * Description: 
+ * Sources:
+ * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
+ * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
  */
 
 import { NextResponse } from 'next/server';
