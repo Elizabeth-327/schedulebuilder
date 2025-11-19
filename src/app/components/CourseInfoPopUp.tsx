@@ -1,5 +1,5 @@
 "use client";
-import Popup from "./PopUp";
+import Popup from "./Popup";
 import { CourseOffering } from "../types/custom";
 import { on } from "events";
 
