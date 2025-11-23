@@ -17,6 +17,7 @@ export default function CourseSearch({
   onScheduleUpdate,
   currentSemester,
 }: CourseSearchProps) {
+
   // STATE
 
   // const [courses, setCourses] = useState<CourseOffering[]>([]);
@@ -109,7 +110,7 @@ export default function CourseSearch({
         <CourseInfoPopUp
           //course={selectedCourse.sections[0]} // fix
           // Elizabeth's fix
-          course={
+          section={
             selectedCourse.lectureSections.filter(s => s.semester == currentSemester).length > 0 // if a lecture section exists for the current semester 
               ? selectedCourse.lectureSections.filter(s => s.semester == currentSemester)[0] // show the first occurring lecture section info for the current semester
               : selectedCourse.sections.filter(s => s.semester == currentSemester)[0] // else show the first occurring section for the current semester
@@ -125,6 +126,7 @@ export default function CourseSearch({
               alert(`Course: ${CourseCode} not found in master list.`);
             }
           }}
+          courseBank={allCourses}
         />
       )}
     </div>
