@@ -10,11 +10,11 @@ export default function CourseList({
   onRemoveCourse,
 }: CourseListProps) {
   return (
-    <div className="bg-white rounded border max-h-[calc(100vh-150px)] overflow-y-auto">
-      <div className="p-2 bg-gray-100 border-b sticky top-0">
+    <div className="bg-white rounded border border-gray-300 max-h-[calc(100vh-150px)] overflow-y-auto">
+      <div className="p-2 bg-gray-100 border-b border-gray-300 sticky top-0">
         <h3 className="font-bold text-sm">Courses in Schedule</h3>
       </div>
-      <ul role="list" aria-label="Scheduled courses" className="p-2">
+      <ul role="list" aria-label="Scheduled courses" className="p-2 border-gray-300">
         {courses.length === 0 ? (
           <li className="text-gray-500 text-sm text-center py-4">
             No courses in this schedule
@@ -22,7 +22,7 @@ export default function CourseList({
         ) : (
           courses.map((course) => (
             <li key={course.code} role="listitem">
-              <div className="rounded border p-3 mb-2 hover:bg-gray-50 hover:border-gray-300 transition">
+              <div className="rounded border p-3 mb-2 border-gray-300 hover:bg-gray-50 hover:border-gray-500 transition">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div>

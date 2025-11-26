@@ -298,7 +298,7 @@ export default function WeeklyScheduleGrid({
       {/* Navigation bar */}
 
       <div className=" flex-col gap-2 mr-4">
-        <div className="flex items-center gap-2">
+        <div className="flex justify-center items-center gap-2 p-4">
           <button
             onClick={() =>
               setSelectedScheduleIndex((prev) => Math.max(prev - 1, 0))
@@ -332,15 +332,16 @@ export default function WeeklyScheduleGrid({
           >
             Save Schedule
           </button> */}
-        </div>
-        <CourseOfferingsList courses={getSelectedOfferings()} />
-      </div>
-      <div className="flex-1 min-w-[300px] ">
+        </div>      
+        <div className="flex-1 min-w-[300px] p-4">
         <CourseList
           courses={currentSchedule?.courses || []}
           onRemoveCourse={onRemoveCourse || (() => {})}
         ></CourseList>
+        </div>
+        <CourseOfferingsList courses={getSelectedOfferings()} />
       </div>
+
       {/* Grid */}
       <div
         className="grid border border-gray-300 w-2/3 ml-auto"

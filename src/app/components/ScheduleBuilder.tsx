@@ -236,9 +236,7 @@ export default function ScheduleBuilder({
         onScheduleUpdate={addCourseToSchedule}
         currentSemester={activeSemester}
       />      
-      <SessionProvider>
-        <SavedConfigs />
-      </SessionProvider>
+
       <SignOutButton />
       {
         <WeeklyScheduleGrid
@@ -249,7 +247,9 @@ export default function ScheduleBuilder({
           onRemoveCourse={removeFromSchedule}
         />
       }      
-
+      <SessionProvider>
+        <SavedConfigs />
+      </SessionProvider>
     </div>
   );
 }
