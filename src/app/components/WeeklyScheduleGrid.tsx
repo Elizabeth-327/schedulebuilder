@@ -322,7 +322,7 @@ export default function WeeklyScheduleGrid({
           >
             ▶
           </button>
-          <button
+          {/* <button
             onClick={() => {
               // TODO: refactor to use save ???
               console.log("Save button clicked - not yet implemented");
@@ -331,7 +331,7 @@ export default function WeeklyScheduleGrid({
             className="px-1 py-0.5 text-white bg-blue-600 rounded hover:bg-blue-700 whitespace-nowrap "
           >
             Save Schedule
-          </button>
+          </button> */}
         </div>
         <CourseOfferingsList courses={getSelectedOfferings()} />
       </div>
