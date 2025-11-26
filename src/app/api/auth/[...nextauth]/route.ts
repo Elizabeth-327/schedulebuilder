@@ -1,7 +1,7 @@
 /* 
  * Author: Janna Dungao
  * Date: 11/02/25
- * Description: Handles routing for use login and user 
+ * Description: Handles routing for login and signout
  * Sources:
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a

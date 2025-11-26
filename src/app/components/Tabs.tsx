@@ -35,7 +35,7 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
     // save name for new schedule
     const handleAddPlan = async (planName: string) => {
         const newPlan = await onAddPlan(planName);
-        if (newPlan) {
+        if (addPlan && newPlan) {
             handlePlanChange(newPlan);
             setAddPlan(false);
             setNewPlan('');
@@ -49,9 +49,12 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
     // rename plan
     const handleRenamePlan = async (newPlanName: string) => {
         const rename = await onRenamePlan();
-        activeSchedule.name = newPlanName;
-        setNewPlanName('');
-        setRenamePlan(false);
+        if (renamePlan && rename) {
+            activeSchedule.name = newPlanName;
+            setNewPlanName('');
+            setRenamePlan(false);            
+        }
+
     }
 
     return (
@@ -129,6 +132,9 @@ export default function Tabs({ semesters, activeSemester, schedules, activeSched
                         />
                         <button key={newPlanName} className="text-white bg-blue-600 rounded shadow-lg hover:text-blue-700 p-2" type="submit">
                             Submit
+                        </button>
+                        <button className="text-blue-600 hover:text-blue-700 p-2" onClick={() => setRenamePlan(false)}>
+                            Cancel
                         </button>
                     </form>
                 )}

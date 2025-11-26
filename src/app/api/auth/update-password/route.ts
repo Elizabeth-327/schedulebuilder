@@ -1,8 +1,8 @@
 /* 
  * Author: Janna Dungao
- * Date: 
- * Description: 
- * Sources:
+ * Date: 11/02/25
+ * Description: Handles routing for the update/reset password page 
+ * Sources: 
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
  */

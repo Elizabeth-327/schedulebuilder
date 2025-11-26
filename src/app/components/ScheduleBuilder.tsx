@@ -172,6 +172,10 @@ export default function ScheduleBuilder({
       user_uuid,
       activeSchedule.name
     );
+    if (schedules.length < 1) {
+        alert("No plans to delete");
+        return true;
+    }
     if (success) {
       // Fetch updated schedules and update local state
       const updatedSchedules = await getSchedules(tokens, user_uuid);
@@ -229,7 +233,7 @@ export default function ScheduleBuilder({
       />
       <CourseSearch
         allCourses={allCourses}
-        onScheduleUpdate={addCourseToSchedule}
+        //onScheduleUpdate={addCourseToSchedule}
         currentSemester={activeSemester}
       />
       <SignOutButton />
