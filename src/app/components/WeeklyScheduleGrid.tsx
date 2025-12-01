@@ -1,3 +1,11 @@
+/* 
+ * Author(s): 
+ * Date: 11/02/25
+ * Description: 
+ * Sources: 
+ */
+
+
 import React from "react";
 import { useState, useEffect } from "react";
 import { Course, CourseOffering, Schedule } from "../types/custom";

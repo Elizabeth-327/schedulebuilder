@@ -1,3 +1,10 @@
+/* 
+ * Author(s): 
+ * Date: 11/02/25
+ * Description: 
+ * Sources: 
+ */
+
 import { Schedule, SupabaseTokens } from "./types/custom";
 import { databaseClient } from "./utils/client";
 

@@ -1,3 +1,10 @@
+/* 
+ * Author(s): 
+ * Date: 11/02/25
+ * Description: 
+ * Sources: 
+ */
+
 
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";

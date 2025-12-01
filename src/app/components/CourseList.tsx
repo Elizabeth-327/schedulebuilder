@@ -1,3 +1,10 @@
+/* 
+ * Author(s): 
+ * Date: 11/02/25
+ * Description: 
+ * Sources: 
+ */
+
 "use client";
 import { Course, CourseOffering } from "../types/custom";
 

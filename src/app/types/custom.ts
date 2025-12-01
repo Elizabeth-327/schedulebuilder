@@ -1,3 +1,10 @@
+/* 
+ * Author(s): 
+ * Date: 11/02/25
+ * Description: 
+ * Sources: 
+ */
+
 export type CourseOffering = {
   class_nbr: number; // uid-serving
   component: "LEC" | "LBN" | "DIS" | string | null;

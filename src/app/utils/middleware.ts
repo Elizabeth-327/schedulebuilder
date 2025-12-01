@@ -1,5 +1,5 @@
 /* 
- * Author: 
+ * Author(s): 
  * Date: 
  * Description: 
  * Sources:

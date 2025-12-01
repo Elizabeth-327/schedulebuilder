@@ -1,3 +1,10 @@
+/* 
+ * Author(s): Elizabeth Miller, Janna Dungao
+ * Date: 11/02/25
+ * Description: Frontend/wrapper for main schedule builder page
+ * Sources: 
+ */
+
 "use client";
 import { useState, useEffect, Dispatch, SetStateAction, useMemo } from "react";
 import { Course, CourseOffering, Schedule, Plan } from "../types/custom";

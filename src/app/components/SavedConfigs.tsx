@@ -1,3 +1,10 @@
+/* 
+ * Author(s): 
+ * Date: 11/02/25
+ * Description: 
+ * Sources: 
+ */
+
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CourseOffering, Schedule } from "../types/custom";
