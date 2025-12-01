@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     try {
         const { code, password } = await request.json();
         if (!password || password.trim().length < 8) {
+            alert('Password must be at least 8 characters long')
             return NextResponse.json(
                 { error: 'Password must be at least 8 characters long'},
                 { status: 400 }

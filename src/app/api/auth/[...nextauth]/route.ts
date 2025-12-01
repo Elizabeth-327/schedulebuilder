@@ -117,6 +117,7 @@ const authHandlers = {
             }
         );
         if (error) {
+            alert('Unexpected error updating password.');
             console.error(error.message);
         }
         return data;
