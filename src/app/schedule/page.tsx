@@ -1,3 +1,10 @@
+/* 
+ * Author(s): Elizabeth Miller, Janna Dungao
+ * Date: 11/02/25
+ * Description: Page wrapper for schedule builder page
+ * Sources: ChatGPT for Suspense implementation
+ */
+
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
