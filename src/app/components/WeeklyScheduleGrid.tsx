@@ -1,7 +1,7 @@
 /* 
  * Author(s): Hunter Long, 
  * Date: 11/02/25
- * Description: 
+ * Description: Component to display a weekly schedule grid with course offerings, including all possible schedule combinations.
  * Sources: 
  */
 
