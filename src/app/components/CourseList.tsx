@@ -1,8 +1,7 @@
-/* 
- * Author(s): 
+/*
+ * Author(s): Marco Martinez
  * Date: 11/02/25
- * Description: 
- * Sources: 
+ * Description: Component to display a list of courses in the schedule and allows addition to classes to the current schedule and removes courses throug the click of an X button
  */
 
 "use client";
@@ -21,7 +20,11 @@ export default function CourseList({
       <div className="p-2 bg-gray-100 border-b border-gray-300 sticky top-0">
         <h3 className="font-bold text-sm">Courses in Schedule</h3>
       </div>
-      <ul role="list" aria-label="Scheduled courses" className="p-2 border-gray-300">
+      <ul
+        role="list"
+        aria-label="Scheduled courses"
+        className="p-2 border-gray-300"
+      >
         {courses.length === 0 ? (
           <li className="text-gray-500 text-sm text-center py-4">
             No courses in this schedule

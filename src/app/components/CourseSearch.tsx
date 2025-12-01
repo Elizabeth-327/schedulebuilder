@@ -1,8 +1,8 @@
-/* 
- * Author(s): Hunter Long,
+/*
+ * Author(s): Hunter Long, Marco Martinez
  * Date: 11/02/25
- * Description: 
- * Sources: 
+ * Description: Component for searching and selecting courses
+ * Sources:
  */
 
 "use client";
@@ -24,7 +24,6 @@ export default function CourseSearch({
   onScheduleUpdate,
   currentSemester,
 }: CourseSearchProps) {
-
   // STATE
 
   // const [courses, setCourses] = useState<CourseOffering[]>([]);
@@ -32,9 +31,7 @@ export default function CourseSearch({
   const [query, setQuery] = useState("");
   const resultRef = useRef<HTMLDivElement | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(
-    null
-  );
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   // LIFECYCLE
 
@@ -56,18 +53,20 @@ export default function CourseSearch({
 
   const trimmed = query.trim().toLowerCase();
   const filteredCourses = trimmed
-    ? allCourses.filter(c => c.sections.some(s => s.semester === currentSemester)).filter((course) => {
-		/*
+    ? allCourses
+        .filter((c) => c.sections.some((s) => s.semester === currentSemester))
+        .filter((course) => {
+          /*
         const num = Number(trimmed);
         if (!Number.isNaN(num)) {
           return course.class_nbr === num || course.course_nbr === num;
         }
 		*/
-        return (
-          (course.name.toLowerCase().includes(trimmed) ?? false) ||
-          (course.code.toLowerCase().includes(trimmed) ?? false)
-        );
-      })
+          return (
+            (course.name.toLowerCase().includes(trimmed) ?? false) ||
+            (course.code.toLowerCase().includes(trimmed) ?? false)
+          );
+        })
     : [];
 
   return (
@@ -101,10 +100,7 @@ export default function CourseSearch({
                         setIsSearchOpen(false);
                       }}
                     >
-                      <strong>
-                        {course.code}
-                      </strong>
-                      : {course.name}
+                      <strong>{course.code}</strong>: {course.name}
                     </div>
                   </li>
                 ))}
@@ -118,9 +114,15 @@ export default function CourseSearch({
           //course={selectedCourse.sections[0]} // fix
           // Elizabeth's fix
           section={
-            selectedCourse.lectureSections.filter(s => s.semester == currentSemester).length > 0 // if a lecture section exists for the current semester 
-              ? selectedCourse.lectureSections.filter(s => s.semester == currentSemester)[0] // show the first occurring lecture section info for the current semester
-              : selectedCourse.sections.filter(s => s.semester == currentSemester)[0] // else show the first occurring section for the current semester
+            selectedCourse.lectureSections.filter(
+              (s) => s.semester == currentSemester
+            ).length > 0 // if a lecture section exists for the current semester
+              ? selectedCourse.lectureSections.filter(
+                  (s) => s.semester == currentSemester
+                )[0] // show the first occurring lecture section info for the current semester
+              : selectedCourse.sections.filter(
+                  (s) => s.semester == currentSemester
+                )[0] // else show the first occurring section for the current semester
           }
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
@@ -139,4 +141,3 @@ export default function CourseSearch({
     </div>
   );
 }
-

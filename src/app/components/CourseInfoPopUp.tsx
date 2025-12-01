@@ -1,8 +1,8 @@
-/* 
- * Author(s): Hunter Long,
+/*
+ * Author(s): Hunter Long, Marco Martinez
  * Date: 11/02/25
- * Description: 
- * Sources: 
+ * Description: Displays more information about a course offering in a popup
+ * Sources:
  */
 
 "use client";
@@ -21,7 +21,7 @@ export default function CourseInfoPopup({
   section,
   onClose,
   onAddtoSchedule,
-  courseBank
+  courseBank,
 }: CourseInfoPopupProps) {
   const course = mapSectionToCourse(section, courseBank)!;
   return (
