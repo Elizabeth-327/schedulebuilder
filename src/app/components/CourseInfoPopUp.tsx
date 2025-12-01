@@ -1,68 +1,36 @@
 "use client";
+import { Course, CourseOffering, mapSectionToCourse } from "../types/custom";
 import Popup from "./Popup";
-import { CourseRow } from "../types/custom";
 import { on } from "events";
 
-interface CourseInfoPopUpProps {
-  course: CourseRow;
+interface CourseInfoPopupProps {
+  section: CourseOffering;
   onClose: () => void;
-  onAddtoSchedule: (course: CourseRow) => void;
+  onAddtoSchedule: (course: CourseOffering) => void;
+  courseBank: Course[];
 }
 
-export default function CourseInfoPopUp({
-  course,
+export default function CourseInfoPopup({
+  section,
   onClose,
   onAddtoSchedule,
-}: CourseInfoPopUpProps) {
+  courseBank
+}: CourseInfoPopupProps) {
+  const course = mapSectionToCourse(section, courseBank)!;
   return (
-    <Popup title={course.course_title || "Course Info"} onClose={onClose}>
+    <Popup title={course.name || "Course Info"} onClose={onClose}>
       <div className="space-y-4">
         <p>
-          <strong>Class Number:</strong> {course.class_nbr}
+          <strong>Course Code:</strong> {course.code}
         </p>
         <p>
-          <strong>Course Code:</strong> {course.course} {course.number}
+          <strong>Course Title:</strong> {course.name}
         </p>
-        <p>
-          <strong>Course Number:</strong> {course.course_nbr}
-        </p>
-        <p>
-          <strong>Course Title:</strong> {course.course_title}
-        </p>
-        <p>
-          <strong>Section:</strong> {course.section_nbr}
-        </p>
-        <p>
-          <strong>Course Topic:</strong> {course.course_topic}
-        </p>
-        <p>
-          <strong> Time:</strong> {course.start} -{course.end}
-        </p>
-        <p>
-          <strong>Meeting Days:</strong> {course.meeting_days}
-        </p>
-        <p>
-          <strong>Dates:</strong> Start: {course.start_date}, End:{" "}
-          {course.end_date}
-        </p>
-        <p>
-          <strong>Semester:</strong> {course.semester}
-        </p>
-        <p>
-          <strong>Instructor:</strong> {course.instructor}
-        </p>
-        <p>
-          <strong>Component:</strong> {course.component}
-        </p>
-        <p>
-          <strong>Room:</strong> {course.room}
-        </p>
-
         {onAddtoSchedule && (
           <div className="pt-4">
             <button
               onClick={() => {
-                onAddtoSchedule(course);
+                onAddtoSchedule(section);
                 onClose();
               }}
               className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition"

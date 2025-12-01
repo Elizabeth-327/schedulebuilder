@@ -1,4 +1,11 @@
-
+/* 
+ * Author: Janna Dungao
+ * Date: 11/02/25
+ * Description: Frontend for update password page (reset password).
+ * Sources:
+ * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
+ * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
+ */
 
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -79,27 +86,30 @@ export default function UpdatePasswordPage() {
     }
 
     return(
-        <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
-            <form onSubmit={handleUpdatePassword} className="flex flex-col items-center justify-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10">
-                <h2 className="font-semibold">Reset Password</h2>
-                <input
-                    type="password"
-                    placeholder="New Password"
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    className="border border-gray-300 bg-sky-100 rounded p-2"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
-                    className="border border-gray-300 bg-sky-100 rounded p-2"
-                    required
-                />
-                <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
-            </form>
+        <div className="bg-yellow-50">
+            <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
+                <form onSubmit={handleUpdatePassword} className="flex flex-col items-center justify-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10">
+                    <h2 className="font-semibold">Reset Password</h2>
+                    <input
+                        type="password"
+                        placeholder="New Password"
+                        value={newPassword}
+                        onChange={(event) => setNewPassword(event.target.value)}
+                        className="border border-gray-300 bg-sky-100 rounded p-2"
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChange={(event) => setConfirmPassword(event.target.value)}
+                        className="border border-gray-300 bg-sky-100 rounded p-2"
+                        required
+                    />
+                    <button className="text-white bg-blue-600 rounded shadow-lg hover:bg-blue-700 p-2" type="submit">Submit</button>
+                </form>
+            </div>       
         </div>
+
     );
 }

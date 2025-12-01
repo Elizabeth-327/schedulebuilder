@@ -1,32 +1,36 @@
 "use client";
 
 import { useState, useEffect, FormEventHandler, useRef } from "react";
-import { CourseRow } from "../types/custom";
+import { CourseOffering } from "../types/custom";
 import { getCourses } from "../supabaseAccess";
 import CourseInfoPopUp from "./CourseInfoPopUp";
+import { Course, Schedule } from "../types/custom";
 
-export default function CourseSearch() {
+interface CourseSearchProps {
+  allCourses: Course[];
+  onScheduleUpdate?: (course: Course) => void;
+  currentSemester: string;
+}
+
+export default function CourseSearch({
+  allCourses,
+  onScheduleUpdate,
+  currentSemester,
+}: CourseSearchProps) {
+
   // STATE
 
-  const [courses, setCourses] = useState<CourseRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [courses, setCourses] = useState<CourseOffering[]>([]);
+  // const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const resultRef = useRef<HTMLUListElement>(null);
+  const resultRef = useRef<HTMLDivElement | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<CourseRow | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(
+    null
+  );
 
   // LIFECYCLE
 
-  useEffect(() => {
-    // after load
-    const loadCourses = async () => {
-      const courses = await getCourses();
-      setCourses(courses);
-      setLoading(false);
-    };
-
-    loadCourses();
-  }, []);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -43,42 +47,31 @@ export default function CourseSearch() {
     };
   }, []);
 
-  if (loading) {
-    return <h2>Loading Courses...</h2>;
-  }
-
-  function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const input = event.currentTarget.elements.namedItem(
-      "coursesearch"
-    ) as HTMLInputElement;
-    let query = input.value;
-    query = query.trim(); // process more
-    // do something -- probably add to the schedule UI.
-  }
   const trimmed = query.trim().toLowerCase();
   const filteredCourses = trimmed
-    ? courses.filter((course) => {
+    ? allCourses.filter(c => c.sections.some(s => s.semester === currentSemester)).filter((course) => {
+		/*
         const num = Number(trimmed);
         if (!Number.isNaN(num)) {
           return course.class_nbr === num || course.course_nbr === num;
         }
+		*/
         return (
-          (course.course_title?.toLowerCase().includes(trimmed) ?? false) ||
-          (course.course?.toLowerCase().includes(trimmed) ?? false)
+          (course.name.toLowerCase().includes(trimmed) ?? false) ||
+          (course.code.toLowerCase().includes(trimmed) ?? false)
         );
       })
     : [];
 
   return (
-    <div className="text-black">
-      <form action="submit" onSubmit={formSubmitHandler}>
-        <div className="relative top-full left-0 w-full inline-block w-80 sm:w-150 ">
+    <div>
+      <form action="submit">
+        <div className="relative top-full left-0 w-full inline-block sm:w-150 ">
           <input
             type="text"
             name="coursesearch"
             id="coursesearch"
-            className="border"
+            className="border border-gray-300 bg-sky-100 rounded py-1 px-2"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -93,18 +86,18 @@ export default function CourseSearch() {
             >
               <ul role="listbox" aria-label="Course results" className="p-2 ">
                 {filteredCourses.map((course) => (
-                  <li key={course.class_nbr} role="option">
+                  <li key={course.code} role="option">
                     <div
-                      className="rounded border border-gray-500 p-3 hover:bg-gray-200 hover:border-black transition cursor-pointer"
+                      className="rounded border p-3 hover:bg-gray-50 hover:border-gray-300 transition cursor-pointer"
                       onClick={() => {
                         setSelectedCourse(course);
                         setIsSearchOpen(false);
                       }}
                     >
                       <strong>
-                        {course.course} {course.number}
+                        {course.code}
                       </strong>
-                      : {course.course_title} - {course.component}
+                      : {course.name}
                     </div>
                   </li>
                 ))}
@@ -115,14 +108,28 @@ export default function CourseSearch() {
       </form>
       {selectedCourse && (
         <CourseInfoPopUp
-          course={selectedCourse}
+          //course={selectedCourse.sections[0]} // fix
+          // Elizabeth's fix
+          section={
+            selectedCourse.lectureSections.filter(s => s.semester == currentSemester).length > 0 // if a lecture section exists for the current semester 
+              ? selectedCourse.lectureSections.filter(s => s.semester == currentSemester)[0] // show the first occurring lecture section info for the current semester
+              : selectedCourse.sections.filter(s => s.semester == currentSemester)[0] // else show the first occurring section for the current semester
+          }
           onClose={() => setSelectedCourse(null)}
           onAddtoSchedule={(course) => {
-            // TODO: Implement add to schedule functionality
-            console.log("Adding course to schedule:", course);
+            const CourseCode = `${course.course} ${course.number}`;
+            const matchCourse = allCourses.find((c) => c.code === CourseCode);
+            if (course && onScheduleUpdate) {
+              onScheduleUpdate(matchCourse!);
+              setSelectedCourse(null);
+            } else {
+              alert(`Course: ${CourseCode} not found in master list.`);
+            }
           }}
+          courseBank={allCourses}
         />
       )}
     </div>
   );
 }
+

@@ -1,4 +1,9 @@
-
+/* 
+ * Author: 
+ * Date: 
+ * Description: 
+ * Sources:
+ */
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { Database } from "../types/supabase";

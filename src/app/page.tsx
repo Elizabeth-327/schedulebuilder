@@ -38,29 +38,29 @@ export default function Home() {
 
       </div>
       <div className="flex flex-col items-start space-y-8 pl-200 pr-64">
-        <h1 className="text-8xl text-blue-400 font-bold font-sans drop-shadow-lg mb-6">
+        <h1 className="text-8xl text-blue-600 font-bold font-sans drop-shadow-lg mb-6">
           KU Schedule Planner
         </h1>
-        Yo gaba gaba scooby doo
+        {/* Yo gaba gaba scooby doo */}
         <br></br>
         <br></br>
-        <button
+        {/* <button
           className="px-6 py-3 bg-cyan-400 text-white font-sans rounded hover:bg-cyan-500"
           onClick={() => router.push("/schedule")}
         >
           Build Schedule
-        </button>
+        </button> */}
         <button
-          className="px-6 py-3 bg-cyan-400 text-white rounded hover:bg-blue-700"
+          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={() => router.push("auth/signin")}
         >
           Login
         </button>
         <button
-          className="px-6 py-3 bg-cyan-400 text-white rounded hover:bg-blue-700"
+          className="text-blue-600 hover:text-blue-700"
           onClick={() => router.push("auth/signup")}
         >
-          Create Account
+          Register?
         </button>
       </div>
     </div>
