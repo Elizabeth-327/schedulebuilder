@@ -1,5 +1,5 @@
 /* 
- * Author(s): Elizabeth Miller, Janna Dungao
+ * Author(s): Elizabeth Miller, Janna Dungao, Addison Bartelli
  * Date: 11/02/25
  * Description: Frontend/wrapper for main schedule builder page
  * Sources: 

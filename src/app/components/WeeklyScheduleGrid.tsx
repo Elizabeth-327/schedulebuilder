@@ -1,5 +1,5 @@
 /* 
- * Author(s): Hunter Long, 
+ * Author(s): Hunter Long, Addison Bartelli
  * Date: 11/02/25
  * Description: Component to display a weekly schedule grid with course offerings, including all possible schedule combinations.
  * Sources: 
@@ -10,7 +10,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Course, CourseOffering, Schedule } from "../types/custom";
 import CourseList from "./CourseList";
-import CourseOfferingsList from "./CourseOfferingList";
+import CourseOfferingsList from "./CourseOfferingsList";
 interface WeeklyScheduleGridProps {
   allCourses: Course[];
   schedulesInSemester: Schedule[];
@@ -347,7 +347,7 @@ export default function WeeklyScheduleGrid({
           onRemoveCourse={onRemoveCourse || (() => {})}
         ></CourseList>
         </div>
-        <CourseOfferingsList courses={getSelectedOfferings()} />
+        {/* <CourseOfferingsList courses={getSelectedOfferings()} /> */}
       </div>
 
       {/* Grid */}

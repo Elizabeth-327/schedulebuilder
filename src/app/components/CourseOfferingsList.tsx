@@ -1,7 +1,7 @@
 /* 
- * Author(s): 
+ * Author(s): Elizabeth??? Not Sure --Addison
  * Date: 11/02/25
- * Description: 
+ * Description: I think this file was abandoned after a refactor but idk
  * Sources: 
  */
 
@@ -12,6 +12,7 @@ interface CourseOfferingsProps {
   courses: CourseOffering[];
 }
 
+// this doesn't even return JSX
 export default function CourseOfferingsList({ courses }: CourseOfferingsProps) {
   const groupedCourses = courses.reduce((acc, offering) => {
     const courseCode = `${offering.course} ${offering.number}`;

@@ -1,7 +1,7 @@
 /* 
- * Author(s): 
+ * Author(s): Addison Bartelli
  * Date: 11/02/25
- * Description: 
+ * Description: File that was intended to be build upon but now only displayes logged-in user.
  * Sources: 
  */
 
