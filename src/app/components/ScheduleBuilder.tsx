@@ -137,6 +137,7 @@ export default function ScheduleBuilder({
     }
   };
 
+  // Allow users to add and name a new plan
   const handleAddPlan = async (planName: string): Promise<Plan | null> => {
     if (!session?.user?.id || !session?.supabase) {
       alert("Log in to add a plan.");
@@ -166,8 +167,9 @@ export default function ScheduleBuilder({
     }
   };
 
-  /** True on success */
+  // Allow users to dealete saved plans
   const handleRemovePlan = async () => {
+    // error handling
     if (!session?.user?.id || !session?.supabase) {
       alert("Log in to delete a plan");
       return false;
@@ -183,6 +185,7 @@ export default function ScheduleBuilder({
         alert("No plans to delete");
         return true;
     }
+    // successful saved schedules fetch
     if (success) {
       // Fetch updated schedules and update local state
       const updatedSchedules = await getSchedules(tokens, user_uuid);
@@ -208,6 +211,7 @@ export default function ScheduleBuilder({
     }
   };
 
+  // Allow users to rename their saved plans
   const handleRenamePlan = async () => {
     if(!session?.user?.id || !session?.supabase) {
         alert("Log in to rename a plan");
