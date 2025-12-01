@@ -25,13 +25,13 @@ export default function UpdatePasswordPage() {
     useEffect(() => {
         async function handlePasswordRecovery() {
             try {
-                const code = searchParams.get("code");
+                const code = searchParams.get("code"); // broken link
                 if (!code) {
                     toast.error("Missing exchange code.");
                     setIsLoading(false);
                     return;
                 }
-                const { data, error } = await databaseClient.auth.exchangeCodeForSession(code);
+                const { data, error } = await databaseClient.auth.exchangeCodeForSession(code); // make sure reset link not expired
                 if (error) {
                     toast.error("Failed to verify reset link: ", error);
                     setIsLoading(false);
@@ -55,7 +55,7 @@ export default function UpdatePasswordPage() {
     async function handleUpdatePassword(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setIsSubmitting(true);
-
+        // Check new inputted password & confirm
         if (newPassword.length < 8) {
             toast.error("Password must be at least 8 characters long");
             setIsSubmitting(false);
@@ -66,8 +66,9 @@ export default function UpdatePasswordPage() {
             setIsSubmitting(false);
             return;
         }
+        // error handling
         try {
-            const { error } = await databaseClient.auth.updateUser({
+            const { error } = await databaseClient.auth.updateUser({ 
                 password: newPassword
             });
             if (error) {
@@ -75,7 +76,7 @@ export default function UpdatePasswordPage() {
             } else {
                 toast.success("Password updated.");
                 await databaseClient.auth.signOut();
-                router.push("/auth/signin");
+                router.push("/auth/signin"); // reroute to login page on successful password update
             }
         } catch (error) {
             console.error("Error updating password: ", error);
@@ -90,6 +91,7 @@ export default function UpdatePasswordPage() {
             <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
                 <form onSubmit={handleUpdatePassword} className="flex flex-col items-center justify-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10">
                     <h2 className="font-semibold">Reset Password</h2>
+                    {/* New password form */}
                     <input
                         type="password"
                         placeholder="New Password"
@@ -98,6 +100,7 @@ export default function UpdatePasswordPage() {
                         className="border border-gray-300 bg-sky-100 rounded p-2"
                         required
                     />
+                    {/* confirmation form to assure passwords match */}
                     <input
                         type="password"
                         placeholder="Confirm Password"

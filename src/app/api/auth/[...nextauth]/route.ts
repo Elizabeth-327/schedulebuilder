@@ -52,7 +52,7 @@ declare module "next-auth/jwt" {
 
 // Auth handlers for supabase
 const authHandlers = {
-    async handleSignup(email: string, password: string) {
+    async handleSignup(email: string, password: string) { // account creation handler
         const serverDBClient = await createClient(cookies());
         const { data, error } = await serverDBClient.auth.signUp({
             email,
@@ -61,7 +61,7 @@ const authHandlers = {
                 emailRedirectTo: `${process.env.NEXTAUTH_URL}`,
             },
         });
-
+        // Error handling
         if (error) {
             console.error('[AUTH] Signup error: ', error);
             throw new Error(error.message);
@@ -75,18 +75,18 @@ const authHandlers = {
         return data.user;
     },
 
-    async handleSignIn(email: string, password: string) {
+    async handleSignIn(email: string, password: string) { // log in handler
         const serverDBClient = await createClient(cookies());
         const { data, error } = await serverDBClient.auth.signInWithPassword({
             email,
             password,
         });
-
+        // Error handling
         if (error) {
             console.error('[AUTH] Signin error: ', error);
             throw new Error(error.message);
         } 
-
+        
         if (!data.user?.id) {
             throw new Error('Invalid credentials');
         }
@@ -108,7 +108,7 @@ const authHandlers = {
         return data;
     },
     
-    async handleResetPassword(email: string) {
+    async handleResetPassword(email: string) { // password reset handler
         const serverDBClient = await createClient(cookies());
         const { data, error } = await serverDBClient.auth.resetPasswordForEmail(
             email,
@@ -131,7 +131,7 @@ export const authOptions: NextAuthOptions = {
         maxAge: 7 * 24 * 60 * 60, // one week
     },
     providers: [
-        CredentialsProvider({
+        CredentialsProvider({ // supabase credentials handling
             name: 'credentials',
             credentials: {
                 email: { label: "Email", type: "email", placeholder: 'Enter email' },
@@ -164,10 +164,10 @@ export const authOptions: NextAuthOptions = {
                     
                     let result;
                     if (lowerMode === 'signup') {
-                        const user = await authHandlers.handleSignup(email, password);
+                        const user = await authHandlers.handleSignup(email, password); // create account
                         result = { user };
                     } else {
-                        result = await authHandlers.handleSignIn(email, password);
+                        result = await authHandlers.handleSignIn(email, password); // log in
                     }
                     
                     return {
@@ -191,7 +191,7 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }) { // for jwt encryption
             if (user) {
                 token.userId = user.id;
                 token.email = user.email;
@@ -201,7 +201,7 @@ export const authOptions: NextAuthOptions = {
             }
             return token;
         },
-        async session({ session, token }): Promise<CustomSession> {
+        async session({ session, token }): Promise<CustomSession> { // supabase session
             return {
                 ...session,
                 user: {
@@ -217,7 +217,7 @@ export const authOptions: NextAuthOptions = {
     },
     // Configuration
     pages: {
-        signIn: '/auth/signin',
+        signIn: '/auth/signin', 
         error: '/auth/error',
     },
     events: {
@@ -239,7 +239,7 @@ export const authOptions: NextAuthOptions = {
     debug: process.env.NODE_ENV === 'development',
 };
 
-const handleAuth = async (req: Request, res: Response) => {
+const handleAuth = async (req: Request, res: Response) => { // next.js's next auth handler
     try {
         return await NextAuth(authOptions)(req,res);
     } catch (error) {

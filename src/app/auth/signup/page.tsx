@@ -21,7 +21,7 @@ export default function SignUpPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const result = await signIn('credentials', {
+            const result = await signIn('credentials', { // supabase credentials info
                 email,
                 password,
                 mode: 'signup',
@@ -43,6 +43,7 @@ export default function SignUpPage() {
             <div className="flex h-screen flex-col justify-center items-center m-auto max-w-sm p-8">
                 <form className="flex flex-col items-center justify-center gap-4 border-gray-300 bg-white rounded-xl shadow-lg text-black px-20 py-10" onSubmit={handleSubmit}>
                     <h2 className="font-semibold">Create Account</h2>
+                    {/* Email form */}
                     <input
                         type="email"
                         placeholder="Email"
@@ -51,6 +52,7 @@ export default function SignUpPage() {
                         className="border border-gray-300 bg-sky-100 rounded p-2"
                         required
                     />
+                    {/* Password form  */}
                     <input
                         type="password"
                         placeholder="Password"

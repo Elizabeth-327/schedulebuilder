@@ -14,7 +14,7 @@ import { cookies } from 'next/headers';
 export async function POST(request: Request) {
     try {
         const { code, password } = await request.json();
-        if (!password || password.trim().length < 8) {
+        if (!password || password.trim().length < 8) { // check that the password is long enough
             alert('Password must be at least 8 characters long')
             return NextResponse.json(
                 { error: 'Password must be at least 8 characters long'},
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
                 { status: 401 }
             );
         }
-        const { error: updateError } = await serverDBClient.auth.updateUser({ password });
+        const { error: updateError } = await serverDBClient.auth.updateUser({ password }); // get the user updating their password
         if (updateError) {
             console.error('[API] updateUser error:', updateError);
             return NextResponse.json(
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
                 { status: 500 }
             );
         }
-        return NextResponse.json({ success: true, message: 'Password updated.' });
+        return NextResponse.json({ success: true, message: 'Password updated.' }); // password successfully changed
     } catch (err: any) {
         console.error("Error in update-password API: ", err);
         return NextResponse.json(

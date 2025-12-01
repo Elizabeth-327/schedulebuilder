@@ -1,7 +1,7 @@
 /* 
  * Author: Janna Dungao
  * Date: 11/02/25
- * Description: Front end for password reset requests
+ * Description: Front end for password reset requests from the user (when user clicks Forget password? on the login page)
  * Sources:
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-js-part-1-of-3-76dc97d3a345 
  * https://medium.com/@sidharrthnix/next-js-authentication-with-supabase-and-nextauth-a-deep-dive-part-2-5fa43563989a
@@ -34,7 +34,7 @@ export default function ResetPasswordPage() {
                 toast.error(result.error);
             } else {
                 alert("Reset password email sent.");
-                router.push("/auth/signin");
+                router.push("/auth/signin"); // go back to login page after sending reset email
             }
         } catch (err) {
             console.error("Error during password reset: ", err);
