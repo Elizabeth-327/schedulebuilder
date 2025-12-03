@@ -9,11 +9,12 @@
 
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { databaseClient } from "@/app/utils/client";
+import { SessionProvider } from "next-auth/react";
 
-export default function UpdatePasswordPage() {
+function PageInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [newPassword, setNewPassword] = useState("");
@@ -33,7 +34,7 @@ export default function UpdatePasswordPage() {
                 }
                 const { data, error } = await databaseClient.auth.exchangeCodeForSession(code); // make sure reset link not expired
                 if (error) {
-                    toast.error("Failed to verify reset link: ", error);
+                    toast.error("Failed to verify reset link: " + error.message);
                     setIsLoading(false);
                     return;
                 }
@@ -115,4 +116,12 @@ export default function UpdatePasswordPage() {
         </div>
 
     );
+}
+
+export default function UpdatePasswordPage() {
+    <Suspense fallback={<div className="text-black text-4xl font-bold items-center justify-center">Loading...</div>}>
+        <SessionProvider>
+            <PageInner />
+        </SessionProvider>
+    </Suspense>
 }

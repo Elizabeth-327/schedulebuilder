@@ -16,7 +16,7 @@ import { SessionProvider } from "next-auth/react";
 import WeeklyScheduleGrid from "./WeeklyScheduleGrid";
 import { useSession } from "next-auth/react";
 import { addSchedule, updateSchedule, removeSchedule, getSchedules } from "../supabaseAccess";
-import { SignOutButton } from "../auth/signout/page";
+import SignOutButton from "../auth/signout/page";
 
 type ScheduleBuilderProps = {
   allCourses: Course[];

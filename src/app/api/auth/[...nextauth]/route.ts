@@ -20,6 +20,8 @@ interface CustomUser {
     id: string;
     email: string;
     name: string;
+    supabaseAccessToken?: string;
+    supabaseRefreshToken?: string;
 }
 
 interface CustomSession {
@@ -140,12 +142,11 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials): Promise<CustomUser | null>{
                 // password reset
-                if (credentials.mode === "resetpassword") {
+                if (credentials?.mode === "resetpassword") {
                     try {
-                        const { data, error } = await authHandlers.handleResetPassword(
+                        const data = await authHandlers.handleResetPassword(
                             credentials.email
                         );
-                        if (error) throw error;
                         return null;
                     } catch (error) {
                         console.error("Reset password error: ", error);
@@ -155,7 +156,7 @@ export const authOptions: NextAuthOptions = {
 
                 // signin / signup 
                 try {
-                    const { email, password, mode } = credentials;
+                    const { email, password, mode } = credentials!;
                     const lowerMode = mode?.toLowerCase();
 
                     if (!email && !password) {
@@ -239,13 +240,14 @@ export const authOptions: NextAuthOptions = {
     debug: process.env.NODE_ENV === 'development',
 };
 
-const handleAuth = async (req: Request, res: Response) => { // next.js's next auth handler
+const handleAuth = await (async () => { // next.js's next auth handler
     try {
-        return await NextAuth(authOptions)(req,res);
+        return await NextAuth(authOptions);
     } catch (error) {
         console.error('[AUTH] Unexpected error:', error);
         throw error;
     }
-};
+})();
+
 export const GET = handleAuth;
 export const POST = handleAuth;
