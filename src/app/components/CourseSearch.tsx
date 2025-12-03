@@ -1,5 +1,5 @@
 /* 
- * Author(s): Hunter Long,
+ * Author(s): Hunter Long, Anya Combs
  * Date: 11/02/25
  * Description: Component for searching and selecting courses.
  * Sources: 

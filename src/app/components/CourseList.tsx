@@ -1,7 +1,7 @@
 /* 
  * Author(s): 
  * Date: 11/02/25
- * Description: 
+ * Description: Component for the list of courses in a given schedule.
  * Sources: 
  */
 

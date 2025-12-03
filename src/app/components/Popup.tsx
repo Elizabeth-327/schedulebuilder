@@ -1,7 +1,7 @@
 /* 
  * Author(s): 
  * Date: 11/02/25
- * Description: 
+ * Description: Popup component used throughout the application.
  * Sources: 
  */
 
