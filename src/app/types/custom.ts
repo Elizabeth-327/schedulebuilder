@@ -1,8 +1,8 @@
 /* 
- * Author(s): 
+ * Author(s): Addison Bartelli
  * Date: 11/02/25
- * Description: 
- * Sources: 
+ * Description: Defines Data Types for Schedule Builder
+ * Sources: My noggin. Also TypeScript reference.
  */
 
 export type CourseOffering = {

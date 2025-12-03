@@ -1,7 +1,7 @@
 /*
- * Author(s): Hunter Long, Marco Martinez
+ * Author(s): Hunter Long, Anya Combs
  * Date: 11/02/25
- * Description: Component for searching and selecting courses
+ * Description: Component for searching and selecting courses.
  * Sources:
  */
 
@@ -85,7 +85,7 @@ export default function CourseSearch({
             onFocus={() => setIsSearchOpen(true)}
             placeholder=" Search Courses"
           />
-          {isSearchOpen && filteredCourses.length > 0 && (
+          {isSearchOpen && (
             <div
               ref={resultRef}
               className="absolute top-full left-0 w-full z-30 mt-1 bg-white rounded border max-h-64 overflow-y-auto"
@@ -104,6 +104,7 @@ export default function CourseSearch({
                     </div>
                   </li>
                 ))}
+                {filteredCourses.length == 0 && <li>No courses found.</li>}
               </ul>
             </div>
           )}

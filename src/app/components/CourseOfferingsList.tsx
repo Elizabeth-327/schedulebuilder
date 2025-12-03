@@ -1,7 +1,7 @@
 /*
  * Author(s): Marco Martinez( first version of display results)
  * Date: 11/02/25
- * Description: Component to display a list of course offerings from the current permutation of class sections
+ * Description: Component to display a list of course offerings from the current permutation of class sections < has been abandoned  after a refactor
  * Sources: CourseList component
  */
 
@@ -12,6 +12,7 @@ interface CourseOfferingsProps {
   courses: CourseOffering[];
 }
 
+// this doesn't even return JSX
 export default function CourseOfferingsList({ courses }: CourseOfferingsProps) {
   const groupedCourses = courses.reduce((acc, offering) => {
     const courseCode = `${offering.course} ${offering.number}`;

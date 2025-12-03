@@ -1,7 +1,7 @@
 /*
  * Author(s): Hunter Long, Marco Martinez
  * Date: 11/02/25
- * Description: Displays more information about a course offering in a popup
+ * Description: Component to display course information in a popup.
  * Sources:
  */
 

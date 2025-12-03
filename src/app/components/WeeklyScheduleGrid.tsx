@@ -1,7 +1,7 @@
 /* 
- * Author(s): Hunter Long, 
+ * Author(s): Hunter Long, Addison Bartelli
  * Date: 11/02/25
- * Description: 
+ * Description: Component to display a weekly schedule grid with course offerings, including all possible schedule combinations.
  * Sources: 
  */
 
@@ -10,7 +10,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Course, CourseOffering, Schedule } from "../types/custom";
 import CourseList from "./CourseList";
-import CourseOfferingsList from "./CourseOfferingList";
+import CourseOfferingsList from "./CourseOfferingsList";
 interface WeeklyScheduleGridProps {
   allCourses: Course[];
   schedulesInSemester: Schedule[];
@@ -285,10 +285,19 @@ export default function WeeklyScheduleGrid({
 
     const schedulesAfterConflictCheck = allSchedules.map((schedule) => {
       const scheduleCopy = [...schedule];
-      markConflicts(scheduleCopy);
-      assignColorsToSchedule(scheduleCopy);
-      return scheduleCopy;
+      markConflicts(scheduleCopy).length
+      assignColorsToSchedule(scheduleCopy)
+      return scheduleCopy
     });
+
+    // // filter all of the schedules to remove conflicting schedules
+    // schedulesAfterConflictCheck = schedulesAfterConflictCheck.filter((schedule) =>{
+    //   // go into each schedule to check if there's any schedule conflicts
+    //   if (schedule.filter((potentialSchedule) => potentialSchedule.conflict === true).length !== 0) {
+    //     // if not empty, kill that thang.
+    //     // probably can have this in the original schedulesafterconflictcheck
+    //   };
+    // });
 
     setScheduleOptions(schedulesAfterConflictCheck);
     setSelectedScheduleIndex(0);
@@ -347,7 +356,7 @@ export default function WeeklyScheduleGrid({
           onRemoveCourse={onRemoveCourse || (() => {})}
         ></CourseList>
         </div>
-        <CourseOfferingsList courses={getSelectedOfferings()} />
+        {/* <CourseOfferingsList courses={getSelectedOfferings()} /> */}
       </div>
 
       {/* Grid */}

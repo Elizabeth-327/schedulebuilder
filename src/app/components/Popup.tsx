@@ -1,7 +1,8 @@
 /*
  * Author(s): Marco Martinez
  * Date: 11/02/25
- * Description: Creates a reusable popup component
+ * Description: Popup component used throughout the application.
+ * Sources:
  */
 
 "use client";
