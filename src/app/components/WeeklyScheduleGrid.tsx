@@ -1,10 +1,9 @@
-/* 
- * Author(s): Hunter Long, Addison Bartelli
+/*
+ * Author(s): Hunter Long, Addison Bartelli, Marco Martinez
  * Date: 11/02/25
  * Description: Component to display a weekly schedule grid with course offerings, including all possible schedule combinations.
- * Sources: 
+ * Sources:
  */
-
 
 import React from "react";
 import { useState, useEffect } from "react";
@@ -285,9 +284,9 @@ export default function WeeklyScheduleGrid({
 
     const schedulesAfterConflictCheck = allSchedules.map((schedule) => {
       const scheduleCopy = [...schedule];
-      markConflicts(scheduleCopy).length
-      assignColorsToSchedule(scheduleCopy)
-      return scheduleCopy
+      markConflicts(scheduleCopy).length;
+      assignColorsToSchedule(scheduleCopy);
+      return scheduleCopy;
     });
 
     // // filter all of the schedules to remove conflicting schedules
@@ -349,12 +348,12 @@ export default function WeeklyScheduleGrid({
           >
             Save Schedule
           </button> */}
-        </div>      
+        </div>
         <div className="flex-1 min-w-[300px] p-4">
-        <CourseList
-          courses={currentSchedule?.courses || []}
-          onRemoveCourse={onRemoveCourse || (() => {})}
-        ></CourseList>
+          <CourseList
+            courses={currentSchedule?.courses || []}
+            onRemoveCourse={onRemoveCourse || (() => {})}
+          ></CourseList>
         </div>
         {/* <CourseOfferingsList courses={getSelectedOfferings()} /> */}
       </div>
